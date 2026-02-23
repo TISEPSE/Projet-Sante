@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Cahier des Charges - Outil de Suivi MEP</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm 2cm 1.5cm 2cm;
+            @bottom-center {
+                content: "Page " counter(page) " / " counter(pages);
+                font-size: 9px;
+                color: #999;
+            }
+        }
+
+        body {
+            font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.35;
+            color: #333;
+        }
+
+        /* PAGE DE TITRE */
+        .title-page {
+            text-align: center;
+            padding-top: 60px;
+            page-break-after: always;
+        }
+
+        .title-page h1 {
+            font-size: 26pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .title-page .subtitle {
+            font-size: 13pt;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .title-page .meta-table {
+            width: 40%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .title-page .meta-table td {
+            padding: 6px 14px;
+            border: 1px solid #ddd;
+            font-size: 9.5pt;
+        }
+
+        .title-page .meta-table td:first-child {
+            background-color: #4a9bd9;
+            color: white;
+            font-weight: bold;
+            width: 80px;
+        }
+
+        /* TITRES DE SECTIONS */
+        h2 {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #4a9bd9;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #333;
+            margin-top: 14px;
+            margin-bottom: 6px;
+        }
+
+        p {
+            margin: 4px 0;
+        }
+
+        ul {
+            padding-left: 22px;
+            margin: 4px 0;
+        }
+
+        li {
+            margin-bottom: 2px;
+        }
+
+        /* SOUS-TITRES EN GRAS */
+        .sub-heading {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        /* TABLEAUX GENERIQUES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 6px 0;
+            font-size: 9.5pt;
+        }
+
+        td {
+            padding: 5px 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Tableaux avec en-tête BLEU */
+        .table-blue th {
+            background-color: #4a9bd9;
+            color: white;
+            font-weight: bold;
+            padding: 6px 10px;
+            text-align: left;
+            border: 1px solid #4a9bd9;
+        }
+
+        /* Tableaux avec en-tête CORAIL / ROUGE */
+        .table-coral th {
+            background-color: #e74c3c;
+            color: white;
+            font-weight: bold;
+            padding: 6px 10px;
+            text-align: left;
+            border: 1px solid #e74c3c;
+        }
+
+        .table-coral tr:nth-child(even) td {
+            background-color: #fdf2f0;
+        }
+
+        /* Tableaux avec en-tête VERT */
+        .table-green th {
+            background-color: #27ae60;
+            color: white;
+            font-weight: bold;
+            padding: 6px 10px;
+            text-align: left;
+            border: 1px solid #27ae60;
+        }
+
+        .table-green tr:nth-child(even) td {
+            background-color: #f0faf4;
+        }
+
+        /* Tableaux avec en-tête VIOLET */
+        .table-purple th {
+            background-color: #8e44ad;
+            color: white;
+            font-weight: bold;
+            padding: 6px 10px;
+            text-align: left;
+            border: 1px solid #8e44ad;
+        }
+
+        .table-purple tr:nth-child(even) td {
+            background-color: #f8f0fc;
+        }
+
+        /* DIAGRAMME DE FLUX */
+        .flow-container {
+            margin: 8px auto;
+            width: 85%;
+            text-align: center;
+        }
+
+        .flow-layer {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 0 auto;
+            background-color: #fafafa;
+        }
+
+        .flow-layer-title {
+            font-size: 9pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            padding: 3px 12px;
+            border-radius: 3px;
+            display: inline-block;
+            color: white;
+        }
+
+        .flow-layer-title.red { background-color: #e74c3c; }
+        .flow-layer-title.blue { background-color: #4a9bd9; }
+        .flow-layer-title.green { background-color: #27ae60; }
+
+        .flow-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 6px;
+        }
+
+        .flow-box {
+            border: 2px solid;
+            border-radius: 6px;
+            padding: 7px 16px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .flow-box.red { border-color: #e74c3c; color: #e74c3c; background: #fff5f4; }
+        .flow-box.blue { border-color: #4a9bd9; color: #2c6faa; background: #f0f7fd; }
+        .flow-box.purple { border-color: #8e44ad; color: #8e44ad; background: #f8f0fc; border-radius: 25px; }
+        .flow-box.green { border-color: #27ae60; color: #1e8449; background: #f0faf4; }
+
+        .flow-arrow {
+            text-align: center;
+            padding: 4px 0;
+            color: #888;
+            font-size: 9pt;
+        }
+
+        .flow-arrow .arrow-char {
+            font-size: 16pt;
+            display: block;
+            line-height: 1;
+        }
+
+        .flow-arrow .arrow-label {
+            font-style: italic;
+            font-size: 8pt;
+        }
+
+        .flow-hbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .flow-harrow {
+            color: #888;
+            font-size: 14pt;
+            font-weight: bold;
+        }
+
+        .flow-harrow-label {
+            font-size: 7.5pt;
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== PAGE 1 : TITRE ==================== -->
+    <div class="title-page">
+        <h1>CAHIER DES CHARGES</h1>
+        <div class="subtitle">Outil de Suivi des Mises en Production</div>
+
+        <table class="meta-table">
+            <tr>
+                <td>Projet</td>
+                <td>Outil de Suivi MEP</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>29/12/2024 (Mis à jour le 02/02/2026)</td>
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td>Projet alternance</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ==================== PAGE 2 : OBJECTIF + CHAMPS ==================== -->
+    <h2>1. OBJECTIF DU PROJET</h2>
+    <p>Mettre en place un outil de suivi des mises en production permettant de :</p>
+    <ul>
+        <li>Suivre les ordres de transport (OT) et leurs modifications</li>
+        <li>Planifier et suivre les demandes de mise en production</li>
+        <li>Rechercher et consulter toutes les demandes</li>
+    </ul>
+
+    <div class="sub-heading">Contexte actuel :</div>
+    <p>Actuellement, le suivi se fait via un fichier Excel.</p>
+
+    <div class="sub-heading">Fonctionnalités principales :</div>
+    <ul>
+        <li>Saisie d'un OT</li>
+        <li>Indiquer que la mise en production (MEP) a eu lieu, avec qui et quand</li>
+    </ul>
+
+    <h2>2. CHAMPS DE DONNÉES</h2>
+    <table class="table-blue">
+        <thead>
+            <tr>
+                <th>Champ</th>
+                <th>Description</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Numéro de l'OT</td>
+                <td>Identifiant de l'ordre de transport</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Intitulé de l'OT (désignation)</td>
+                <td>Description de l'OT</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Titulaire de l'OT</td>
+                <td>Personne responsable</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Numéro de la demande (Mantis/Redmine)</td>
+                <td>Référence de la demande</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Lot de transport</td>
+                <td>Séquence à calculer pour chaque demande</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Ordre de passage</td>
+                <td>Ordre de traitement</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Date et heure souhaitées</td>
+                <td>Date/heure de mise en production</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Demandeur</td>
+                <td>Personne ayant créé la demande</td>
+                <td>Obligatoire</td>
+            </tr>
+            <tr>
+                <td>Remarque</td>
+                <td>Notes supplémentaires</td>
+                <td>Optionnel</td>
+            </tr>
+            <tr>
+                <td>MEP effectuée</td>
+                <td>Indiquer si la mise en production est faite, qui et quand</td>
+                <td>Obligatoire</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ==================== PAGE 3 : DIAGRAMME DE FLUX ==================== -->
+    <h2>3. DIAGRAMME DE FLUX DES ÉCHANGES</h2>
+    <p>Schéma des échanges entre les systèmes tiers, l'application et l'infrastructure :</p>
+
+    <div class="flow-container">
+        <!-- Systèmes Tiers -->
+        <div class="flow-layer" style="border-color: #e74c3c;">
+            <div class="flow-layer-title red">Systèmes Tiers</div>
+            <div class="flow-boxes">
+                <div class="flow-box red">SAP : Source des OT</div>
+                <div class="flow-box red">Redmine / Mantis : Tickets</div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">
+            <span class="arrow-char">&darr;</span>
+            <span class="arrow-label">Numéros d'OT &amp; Numéros de demande</span>
+        </div>
+
+        <!-- Application MEP -->
+        <div class="flow-layer" style="border-color: #4a9bd9;">
+            <div class="flow-layer-title blue">Application MEP</div>
+            <div class="flow-hbox">
+                <div class="flow-box blue">Interface React</div>
+                <div>
+                    <div class="flow-harrow">&harr;</div>
+                    <div class="flow-harrow-label">API REST</div>
+                </div>
+                <div class="flow-box blue">Backend Flask</div>
+                <div>
+                    <div class="flow-harrow">&harr;</div>
+                    <div class="flow-harrow-label">Données</div>
+                </div>
+                <div class="flow-box purple">PostgreSQL</div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">
+            <span class="arrow-char">&darr;</span>
+            <span class="arrow-label">Versioning Git &amp; Archivage</span>
+        </div>
+
+        <!-- Infrastructure -->
+        <div class="flow-layer" style="border-color: #27ae60;">
+            <div class="flow-layer-title green">Infrastructure &amp; Stockage</div>
+            <div class="flow-boxes">
+                <div class="flow-box green">GitLab : Gestion de source</div>
+                <div class="flow-box green">Serveur Santé&amp;Cie</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 4 : FRONTEND ==================== -->
+    <h2>4. FRONTEND</h2>
+
+    <h3>4.1 Technologies</h3>
+    <table class="table-coral">
+        <thead>
+            <tr>
+                <th>Technologie</th>
+                <th>Utilité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>React</td>
+                <td>Framework JavaScript</td>
+            </tr>
+            <tr>
+                <td>CSS/Tailwind</td>
+                <td>Styles</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.2 Pages à créer</h3>
+    <ul>
+        <li>Page de connexion</li>
+        <li>Liste des OT avec recherche</li>
+        <li>Formulaire de création/modification d'OT</li>
+        <li>Détail d'un OT</li>
+    </ul>
+
+    <!-- ==================== PAGE 5 : BACKEND ==================== -->
+    <h2>5. BACKEND</h2>
+
+    <h3>5.1 Technologies</h3>
+    <table class="table-green">
+        <thead>
+            <tr>
+                <th>Technologie</th>
+                <th>Utilité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Python 3.x</td>
+                <td>Langage serveur</td>
+            </tr>
+            <tr>
+                <td>Flask</td>
+                <td>Framework web</td>
+            </tr>
+            <tr>
+                <td>PostgreSQL</td>
+                <td>Base de données</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>5.2 Gestionnaire de source</h3>
+    <p>Utilisation impérative d'un gestionnaire de source basé sur <strong>Git</strong>, en l'occurrence <strong>GitLab</strong>, pour le versioning du code source (frontend et backend).</p>
+
+    <h3>5.3 API REST</h3>
+    <p>Routes à créer :</p>
+    <table class="table-blue">
+        <thead>
+            <tr>
+                <th>Méthode</th>
+                <th>Route</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>POST</td>
+                <td>/api/auth/login</td>
+                <td>Connexion utilisateur</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/ots</td>
+                <td>Liste tous les OT</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/ots/&lt;id&gt;</td>
+                <td>Détails d'un OT</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/ots</td>
+                <td>Créer un OT</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/ots/&lt;id&gt;</td>
+                <td>Modifier un OT</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>/api/ots/&lt;id&gt;</td>
+                <td>Supprimer un OT</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ==================== PAGE 6 : BASE DE DONNÉES ==================== -->
+    <h2>6. BASE DE DONNÉES</h2>
+
+    <h3>6.1 Système</h3>
+    <p>PostgreSQL (développement et production)</p>
+
+    <h3>6.2 Tables</h3>
+
+    <h3>Table : utilisateurs</h3>
+    <table class="table-purple">
+        <thead>
+            <tr>
+                <th>Colonne</th>
+                <th>Type SQL</th>
+                <th>Contrainte</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>SERIAL</td>
+                <td>PRIMARY KEY</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>VARCHAR(100)</td>
+                <td>UNIQUE, NOT NULL</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td>VARCHAR(255)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>nom</td>
+                <td>VARCHAR(100)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>prenom</td>
+                <td>VARCHAR(100)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>date_creation</td>
+                <td>TIMESTAMP</td>
+                <td>DEFAULT NOW()</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Table : ordres_transport</h3>
+    <table class="table-purple">
+        <thead>
+            <tr>
+                <th>Colonne</th>
+                <th>Type SQL</th>
+                <th>Contrainte</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>SERIAL</td>
+                <td>PRIMARY KEY</td>
+            </tr>
+            <tr>
+                <td>numero_ot</td>
+                <td>VARCHAR(50)</td>
+                <td>UNIQUE, NOT NULL</td>
+            </tr>
+            <tr>
+                <td>intitule</td>
+                <td>TEXT</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>titulaire</td>
+                <td>VARCHAR(100)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>numero_demande</td>
+                <td>VARCHAR(50)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>lot_transport</td>
+                <td>INTEGER</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>ordre_passage</td>
+                <td>INTEGER</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>date_souhaitee</td>
+                <td>TIMESTAMP</td>
+                <td>NOT NULL, DEFAULT 18:00</td>
+            </tr>
+            <tr>
+                <td>demandeur</td>
+                <td>VARCHAR(100)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>emplacement_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; emplacements(id)</td>
+            </tr>
+            <tr>
+                <td>statut_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; statuts(id)</td>
+            </tr>
+            <tr>
+                <td>remarque</td>
+                <td>TEXT</td>
+                <td>NULL</td>
+            </tr>
+            <tr>
+                <td>mep_effectuee</td>
+                <td>BOOLEAN</td>
+                <td>DEFAULT FALSE</td>
+            </tr>
+            <tr>
+                <td>mep_effectuee_par</td>
+                <td>VARCHAR(100)</td>
+                <td>NULL</td>
+            </tr>
+            <tr>
+                <td>mep_date</td>
+                <td>TIMESTAMP</td>
+                <td>NULL</td>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; utilisateurs(id)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Table : emplacements</h3>
+    <p>Table de référence des serveurs/environnements de déploiement disponibles.</p>
+    <table class="table-purple">
+        <thead>
+            <tr>
+                <th>Colonne</th>
+                <th>Type SQL</th>
+                <th>Contrainte</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>SERIAL</td>
+                <td>PRIMARY KEY</td>
+            </tr>
+            <tr>
+                <td>nom</td>
+                <td>VARCHAR(100)</td>
+                <td>UNIQUE, NOT NULL</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>TEXT</td>
+                <td>NULL</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Table : statuts</h3>
+    <p>Table de référence des statuts du cycle de vie d'un OT.</p>
+    <table class="table-purple">
+        <thead>
+            <tr>
+                <th>Colonne</th>
+                <th>Type SQL</th>
+                <th>Contrainte</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>SERIAL</td>
+                <td>PRIMARY KEY</td>
+            </tr>
+            <tr>
+                <td>libelle</td>
+                <td>VARCHAR(50)</td>
+                <td>UNIQUE, NOT NULL</td>
+            </tr>
+            <tr>
+                <td>couleur</td>
+                <td>VARCHAR(20)</td>
+                <td>NOT NULL</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Table : commentaires</h3>
+    <p>Notes et échanges ajoutés sur un OT au fil du temps (distinct du champ "remarque" statique).</p>
+    <table class="table-purple">
+        <thead>
+            <tr>
+                <th>Colonne</th>
+                <th>Type SQL</th>
+                <th>Contrainte</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>SERIAL</td>
+                <td>PRIMARY KEY</td>
+            </tr>
+            <tr>
+                <td>ot_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; ordres_transport(id)</td>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; utilisateurs(id)</td>
+            </tr>
+            <tr>
+                <td>contenu</td>
+                <td>TEXT</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>date_creation</td>
+                <td>TIMESTAMP</td>
+                <td>DEFAULT NOW()</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Table : historique_modifications</h3>
+    <p>Journal d'audit : trace toutes les modifications apportées aux OT (qui, quoi, quand).</p>
+    <table class="table-purple">
+        <thead>
+            <tr>
+                <th>Colonne</th>
+                <th>Type SQL</th>
+                <th>Contrainte</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>SERIAL</td>
+                <td>PRIMARY KEY</td>
+            </tr>
+            <tr>
+                <td>ot_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; ordres_transport(id)</td>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>INTEGER</td>
+                <td>FOREIGN KEY &rarr; utilisateurs(id)</td>
+            </tr>
+            <tr>
+                <td>champ_modifie</td>
+                <td>VARCHAR(100)</td>
+                <td>NOT NULL</td>
+            </tr>
+            <tr>
+                <td>ancienne_valeur</td>
+                <td>TEXT</td>
+                <td>NULL</td>
+            </tr>
+            <tr>
+                <td>nouvelle_valeur</td>
+                <td>TEXT</td>
+                <td>NULL</td>
+            </tr>
+            <tr>
+                <td>date_modification</td>
+                <td>TIMESTAMP</td>
+                <td>DEFAULT NOW()</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ==================== PAGE 7 : HÉBERGEMENT + BESOINS MATÉRIELS + LIVRABLES ==================== -->
+    <h2>7. HÉBERGEMENT</h2>
+    <p>Serveur d'entreprise (<strong>serveur santé&amp;cie</strong>)</p>
+
+    <h2>8. BESOINS MATÉRIELS (ENVIRONNEMENT DE TEST)</h2>
+    <table class="table-green">
+        <thead>
+            <tr>
+                <th>Élément</th>
+                <th>Requis</th>
+                <th>Pourquoi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CPU</td>
+                <td>4 vCPU</td>
+                <td>Permet d'exécuter simultanément le frontend React, l'API Flask et PostgreSQL sans ralentissement majeur.</td>
+            </tr>
+            <tr>
+                <td>RAM</td>
+                <td>8 Go</td>
+                <td>Évite la saturation mémoire lors des tests (navigateur, backend, base de données, dépendances).</td>
+            </tr>
+            <tr>
+                <td>Stockage</td>
+                <td>50 Go SSD</td>
+                <td>Capacité suffisante pour le code, la base de test, les logs, les sauvegardes et les dépendances.</td>
+            </tr>
+            <tr>
+                <td>Système d'exploitation</td>
+                <td>Linux LTS</td>
+                <td>Compatibilité et stabilité pour Flask, PostgreSQL et l'outillage de déploiement.</td>
+            </tr>
+            <tr>
+                <td>Base de données</td>
+                <td>PostgreSQL dédié test</td>
+                <td>Isolation des données de test et réduction du risque d'impact sur la production.</td>
+            </tr>
+            <tr>
+                <td>Réseau</td>
+                <td>Connexion stable + accès aux outils tiers</td>
+                <td>Nécessaire pour valider les échanges avec GitLab, SAP et Redmine/Mantis selon les cas d'usage.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>9. LIVRABLES</h2>
+    <ul>
+        <li>Code source (frontend + backend) sur <strong>GitLab</strong></li>
+        <li>Application fonctionnelle</li>
+        <li>Documentation d'installation et schémas de flux</li>
+        <li>Script SQL de création de la base</li>
+    </ul>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Transport Order - Santé&amp;Cie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#197fe6",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111217", // Deep dark background like Grafana
+                        "panel-dark": "#181b1f", // Slightly lighter for panels
+                        "input-bg": "#0b0c0e", // Very dark for inputs
+                        "border-dark": "#2c3235", // Subtle borders
+                        "grafana-orange": "#FF9900", // Specific request
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111217;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2c3235;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3c4753;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex overflow-hidden font-display">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 border-r border-border-dark bg-[#111217] flex flex-col h-screen fixed left-0 top-0 z-20">
+<div class="flex flex-col h-full">
+<!-- User/Brand Section -->
+<div class="p-4 border-b border-border-dark flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 shrink-0" data-alt="User profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBEN2yMVgXCw6lejPD_1cgNPc8lRxNPe3AOWBQlvH0Ixuj96c7bITbeA21IPQCGd23qKx1asqJ0woJLburp8k0pUwbyoj-J-MEnnWZdi1Fw_sCa8f0RCJveUfE1ivBzitEiARL_UjcfMcn61ppyA2mZ-KA_d2yCaofpGhEAJt59MF4UfEI-SF1-X7pysuGXpUtuokzFGxIDeJkNS1OZHD5Rn1mRnQoVqaJf39fvfjNY17DW_Oe2dBd1RuAse6svNclSlvbxwEuoHz8');"></div>
+<div class="flex flex-col overflow-hidden">
+<h1 class="text-white text-sm font-semibold truncate">Santé&amp;Cie</h1>
+<p class="text-[#9dabb8] text-xs truncate">SAP Release Manager</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 overflow-y-auto py-4 flex flex-col gap-1 px-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-[#9dabb8] hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded bg-primary/20 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] fill-1">local_shipping</span>
+<span class="text-sm font-medium">Transport Orders</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-[#9dabb8] hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">merge</span>
+<span class="text-sm font-medium">Releases</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-[#9dabb8] hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">history</span>
+<span class="text-sm font-medium">History Logs</span>
+</a>
+<div class="my-2 border-t border-border-dark mx-3"></div>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-[#9dabb8] hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-[#9dabb8] hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">account_circle</span>
+<span class="text-sm font-medium">Profile</span>
+</a>
+</nav>
+<!-- Bottom Action -->
+<div class="p-4 border-t border-border-dark">
+<button class="flex w-full items-center justify-center gap-2 rounded bg-border-dark hover:bg-white/10 text-xs font-medium text-white h-8 transition-colors">
+<span class="material-symbols-outlined text-[16px]">logout</span>
+                    Sign Out
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 min-h-screen bg-background-light dark:bg-background-dark overflow-y-auto">
+<div class="max-w-[1200px] mx-auto p-6 md:p-8 flex flex-col gap-6">
+<!-- Breadcrumbs & Header -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-sm text-[#9dabb8]">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-xs">/</span>
+<a class="hover:text-primary transition-colors" href="#">Transport Orders</a>
+<span class="text-xs">/</span>
+<span class="text-white">Create OT</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-3xl font-bold text-white tracking-tight">Create Transport Order</h1>
+<p class="text-[#9dabb8] mt-1">Register a new SAP Transport request for deployment.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 rounded bg-transparent border border-border-dark text-white hover:bg-white/5 text-sm font-medium transition-colors">
+                            Cancel
+                        </button>
+<!-- Grafana Orange Primary Action -->
+<button class="px-6 py-2 rounded bg-grafana-orange hover:bg-orange-600 text-white text-sm font-bold shadow-lg shadow-orange-900/20 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                            Save OT
+                        </button>
+</div>
+</div>
+</div>
+<!-- Main Form Panel -->
+<div class="bg-panel-dark border border-border-dark rounded-lg shadow-xl overflow-hidden">
+<!-- Panel Header -->
+<div class="px-6 py-4 border-b border-border-dark bg-[#22252b] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">edit_document</span>
+<h2 class="text-base font-semibold text-white">Order Details</h2>
+</div>
+<div class="px-2 py-1 bg-blue-500/10 border border-blue-500/20 rounded text-xs text-blue-400 font-mono">
+                        Draft Mode
+                    </div>
+</div>
+<!-- Form Content -->
+<div class="p-6">
+<form class="flex flex-col gap-8" onsubmit="event.preventDefault();">
+<!-- Top Grid Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
+<!-- Left Column -->
+<div class="flex flex-col gap-6">
+<!-- OT Number -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="ot-number">OT Number <span class="text-red-500">*</span></label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#505a66] text-[18px]">tag</span>
+</div>
+<input class="w-full bg-input-bg border border-border-dark rounded pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66]" id="ot-number" placeholder="e.g. DEVK900123" type="text"/>
+</div>
+<p class="text-[11px] text-[#505a66]">Unique identifier from SAP system.</p>
+</div>
+<!-- Label -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="label">Label Description <span class="text-red-500">*</span></label>
+<div class="relative">
+<input class="w-full bg-input-bg border border-border-dark rounded px-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66]" id="label" placeholder="Short description of the change..." type="text"/>
+</div>
+</div>
+<!-- Owner Dropdown -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="owner">Owner</label>
+<div class="relative">
+<select class="w-full bg-input-bg border border-border-dark rounded px-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none cursor-pointer" id="owner">
+<option disabled="" selected="" value="">Select an owner</option>
+<option value="user1">Jean Dupont (Dev)</option>
+<option value="user2">Marie Curie (Basis)</option>
+<option value="user3">System Admin</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+<span class="material-symbols-outlined text-[#9dabb8] text-[20px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Request Number -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="request-number">Request Number (Mantis/Redmine)</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#505a66] text-[18px]">bug_report</span>
+</div>
+<input class="w-full bg-input-bg border border-border-dark rounded pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66]" id="request-number" placeholder="#12345" type="text"/>
+</div>
+</div>
+</div>
+<!-- Right Column -->
+<div class="flex flex-col gap-6">
+<!-- Transport Lot -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="transport-lot">Transport Lot</label>
+<div class="relative">
+<input class="w-full bg-input-bg border border-border-dark rounded px-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66]" id="transport-lot" placeholder="e.g. LOT-2023-Q4" type="text"/>
+</div>
+</div>
+<!-- Sequence Order -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="sequence">Sequence Order</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#505a66] text-[18px]">sort</span>
+</div>
+<input class="w-full bg-input-bg border border-border-dark rounded pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66]" id="sequence" placeholder="10" type="number"/>
+</div>
+</div>
+<!-- Scheduled Date/Time -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="schedule">Scheduled Date/Time</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#505a66] text-[18px]">calendar_today</span>
+</div>
+<!-- Defaulting value via JS in real app, here hardcoded for demo -->
+<input class="w-full bg-input-bg border border-border-dark rounded pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66] [color-scheme:dark]" id="schedule" type="datetime-local" value="2023-10-27T18:00"/>
+</div>
+<p class="text-[11px] text-[#505a66]">Default deployment time is 18:00 CET.</p>
+</div>
+<!-- Requester -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="requester">Requester</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#505a66] text-[18px]">person</span>
+</div>
+<input class="w-full bg-input-bg border border-border-dark rounded pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66]" id="requester" placeholder="Name of requester" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Full Width Section -->
+<div class="border-t border-border-dark my-2"></div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-[#9dabb8] uppercase tracking-wider" for="remarks">Remarks &amp; Deployment Instructions</label>
+<textarea class="w-full bg-input-bg border border-border-dark rounded px-3 py-3 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-[#505a66] resize-y" id="remarks" placeholder="Enter any specific deployment instructions, dependencies, or rollback procedures..." rows="5"></textarea>
+</div>
+</form>
+</div>
+<!-- Panel Footer / Status Bar style -->
+<div class="bg-[#111217] px-6 py-3 border-t border-border-dark flex justify-between items-center text-xs text-[#505a66]">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>System Online</span>
+</div>
+<div>
+                        Last updated: Just now
+                     </div>
+</div>
+</div>
+<!-- Side Info Panel (Optional extra context usually found in Grafana dashboards) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-1 bg-panel-dark border border-border-dark rounded-lg p-5">
+<h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-400 text-[18px]">warning</span>
+                        Recent Alerts
+                    </h3>
+<div class="space-y-3">
+<div class="bg-red-500/10 border-l-2 border-red-500 p-2 rounded text-xs">
+<p class="text-white font-medium">Failed Transport #9921</p>
+<p class="text-red-300/70 mt-1">Return code 8 in PROD.</p>
+</div>
+</div>
+</div>
+<div class="lg:col-span-2 bg-panel-dark border border-border-dark rounded-lg p-5 flex flex-col justify-center">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-sm font-semibold text-white">Daily Transport Volume</h3>
+<span class="text-xs text-primary cursor-pointer hover:underline">View Analytics</span>
+</div>
+<!-- Abstract chart representation -->
+<div class="h-12 flex items-end gap-1 mt-2">
+<div class="w-full bg-blue-500/20 h-[30%] rounded-sm"></div>
+<div class="w-full bg-blue-500/20 h-[50%] rounded-sm"></div>
+<div class="w-full bg-blue-500/20 h-[40%] rounded-sm"></div>
+<div class="w-full bg-blue-500/20 h-[70%] rounded-sm"></div>
+<div class="w-full bg-primary h-[85%] rounded-sm relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border-dark">Current: 12 OTs</div>
+</div>
+<div class="w-full bg-blue-500/20 h-[60%] rounded-sm"></div>
+<div class="w-full bg-blue-500/20 h-[45%] rounded-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
