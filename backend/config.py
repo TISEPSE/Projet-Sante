@@ -10,4 +10,10 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'dev-secret-key')
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173')
+    CORS_ORIGINS = [
+        origin.strip()
+        for origin in os.getenv(
+            'CORS_ORIGINS', 'http://localhost:5173,http://localhost:5175'
+        ).split(',')
+        if origin.strip()
+    ]
