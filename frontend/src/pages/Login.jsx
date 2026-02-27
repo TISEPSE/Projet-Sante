@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { login } from '../services/api'
 
 export default function Login({ onLogin }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -13,6 +13,12 @@ export default function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    const email = emailRef.current?.value?.trim() || ''
+    const password = passwordRef.current?.value || ''
+    if (!email || !password) {
+      setError('Email et mot de passe requis')
+      return
+    }
     setSubmitting(true)
     try {
       const data = await login(email, password)
@@ -50,16 +56,19 @@ export default function Login({ onLogin }) {
 
         {/* Form */}
         <div className="px-8 pb-10 w-full">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="off">
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-slate-300" htmlFor="email">
                 Email
               </label>
               <input
+                ref={emailRef}
                 id="email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="login_email"
+                type="email"
+                autoComplete="off"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder="votre@email.fr"
                 className="w-full h-12 rounded bg-input-bg border border-border-dark px-4 text-base text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-600 transition-colors"
               />
@@ -71,10 +80,11 @@ export default function Login({ onLogin }) {
               </label>
               <div className="relative flex w-full">
                 <input
+                  ref={passwordRef}
                   id="password"
+                  name="login_password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="off"
                   placeholder="••••••••••••"
                   className="w-full h-12 rounded-l bg-input-bg border border-border-dark border-r-0 px-4 text-base text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-600 transition-colors"
                 />

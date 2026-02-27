@@ -3,34 +3,37 @@ import { useNavigate, Link } from 'react-router-dom'
 import { register } from '../services/api'
 
 export default function Register() {
-  const [form, setForm] = useState({ prenom: '', nom: '', email: '', password: '', confirm: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
 
-  const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    const formData = new FormData(e.currentTarget)
+    const prenom = String(formData.get('prenom') || '').trim()
+    const nom = String(formData.get('nom') || '').trim()
+    const email = String(formData.get('email') || '').trim()
+    const password = String(formData.get('password') || '')
+    const confirm = String(formData.get('confirm') || '')
 
-    if (!form.prenom.trim() || !form.nom.trim() || !form.email.trim() || !form.password) {
+    if (!prenom || !nom || !email || !password) {
       setError('Tous les champs sont obligatoires')
       return
     }
-    if (form.password !== form.confirm) {
+    if (password !== confirm) {
       setError('Les mots de passe ne correspondent pas')
       return
     }
-    if (form.password.length < 6) {
+    if (password.length < 6) {
       setError('Le mot de passe doit contenir au moins 6 caractères')
       return
     }
 
     setSubmitting(true)
     try {
-      await register(form.prenom, form.nom, form.email, form.password)
+      await register(prenom, nom, email, password)
       navigate('/login')
     } catch (err) {
       setError(err.message || 'Erreur lors de la création du compte')
@@ -67,7 +70,7 @@ export default function Register() {
 
         {/* Form */}
         <div className="px-8 pb-10 w-full">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="off">
             {/* Prénom + Nom sur la même ligne */}
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-2">
@@ -76,8 +79,7 @@ export default function Register() {
                   id="prenom"
                   name="prenom"
                   type="text"
-                  value={form.prenom}
-                  onChange={handleChange}
+                  autoComplete="off"
                   placeholder="Jean"
                   className={inputBase}
                 />
@@ -88,8 +90,7 @@ export default function Register() {
                   id="nom"
                   name="nom"
                   type="text"
-                  value={form.nom}
-                  onChange={handleChange}
+                  autoComplete="off"
                   placeholder="Dupont"
                   className={inputBase}
                 />
@@ -102,8 +103,9 @@ export default function Register() {
                 id="email"
                 name="email"
                 type="email"
-                value={form.email}
-                onChange={handleChange}
+                autoComplete="off"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder="votre@email.fr"
                 className={inputBase}
               />
@@ -116,8 +118,7 @@ export default function Register() {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={form.password}
-                  onChange={handleChange}
+                  autoComplete="off"
                   placeholder="••••••••••••"
                   className="w-full h-12 rounded-l bg-input-bg border border-border-dark border-r-0 px-4 text-base text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-600 transition-colors"
                 />
@@ -139,8 +140,7 @@ export default function Register() {
                 id="confirm"
                 name="confirm"
                 type={showPassword ? 'text' : 'password'}
-                value={form.confirm}
-                onChange={handleChange}
+                autoComplete="off"
                 placeholder="••••••••••••"
                 className={inputBase}
               />
