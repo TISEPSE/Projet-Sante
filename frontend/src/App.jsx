@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import * as api from './services/api'
 import Sidebar from './components/Sidebar'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import OTList from './pages/OTList'
 import OTDetail from './pages/OTDetail'
 import OTForm from './pages/OTForm'
@@ -123,6 +124,10 @@ export default function App() {
           element={isLoggedIn ? <Navigate to="/" replace /> : <Login onLogin={handleLogin} />}
         />
         <Route
+          path="/register"
+          element={isLoggedIn ? <Navigate to="/" replace /> : <Register />}
+        />
+        <Route
           path="/"
           element={
             isLoggedIn ? (
@@ -139,7 +144,7 @@ export default function App() {
           element={
             isLoggedIn ? (
               <Layout user={user}>
-                <OTForm ots={ots} onSave={handleSave} />
+                <OTForm ots={ots} onSave={handleSave} currentUser={user} />
               </Layout>
             ) : (
               <Navigate to="/login" replace />
@@ -169,7 +174,7 @@ export default function App() {
           element={
             isLoggedIn ? (
               <Layout user={user}>
-                <OTForm ots={ots} onSave={handleSave} />
+                <OTForm ots={ots} onSave={handleSave} currentUser={user} />
               </Layout>
             ) : (
               <Navigate to="/login" replace />

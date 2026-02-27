@@ -1,13 +1,13 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, OrdreTransport, Utilisateur
+from flask import Blueprint, request, jsonify, g
+from models import db, OrdreTransport
+from routes.auth import auth_required
 from datetime import datetime
 
 ots_bp = Blueprint('ots', __name__)
 
 
 @ots_bp.get('/api/ots')
-@jwt_required()
+@auth_required
 def list_ots():
     ots = OrdreTransport.query.order_by(
         OrdreTransport.lot_transport, OrdreTransport.ordre_passage
@@ -16,7 +16,7 @@ def list_ots():
 
 
 @ots_bp.post('/api/ots')
-@jwt_required()
+@auth_required
 def create_ot():
     data = request.get_json()
     if not data or not data.get('numero_ot') or not data.get('intitule'):
@@ -43,14 +43,14 @@ def create_ot():
 
 
 @ots_bp.get('/api/ots/<int:ot_id>')
-@jwt_required()
+@auth_required
 def get_ot(ot_id):
     ot = OrdreTransport.query.get_or_404(ot_id)
     return jsonify(ot.to_dict())
 
 
 @ots_bp.put('/api/ots/<int:ot_id>')
-@jwt_required()
+@auth_required
 def update_ot(ot_id):
     ot = OrdreTransport.query.get_or_404(ot_id)
     data = request.get_json()
@@ -70,7 +70,7 @@ def update_ot(ot_id):
 
 
 @ots_bp.delete('/api/ots/<int:ot_id>')
-@jwt_required()
+@auth_required
 def delete_ot(ot_id):
     ot = OrdreTransport.query.get_or_404(ot_id)
     db.session.delete(ot)
@@ -79,21 +79,19 @@ def delete_ot(ot_id):
 
 
 @ots_bp.post('/api/ots/<int:ot_id>/mep')
-@jwt_required()
+@auth_required
 def validate_mep(ot_id):
     ot = OrdreTransport.query.get_or_404(ot_id)
-    user_id = get_jwt_identity()
-    user = Utilisateur.query.get(int(user_id))
-
+    user = g.current_user
     ot.mep_effectuee = True
-    ot.mep_effectuee_par = f"{user.prenom} {user.nom}" if user else 'Inconnu'
+    ot.mep_effectuee_par = f"{user.prenom} {user.nom}"
     ot.mep_date = datetime.utcnow().strftime('%Y-%m-%dT%H:%M')
     db.session.commit()
     return jsonify(ot.to_dict())
 
 
 @ots_bp.delete('/api/ots/<int:ot_id>/mep')
-@jwt_required()
+@auth_required
 def cancel_mep(ot_id):
     ot = OrdreTransport.query.get_or_404(ot_id)
     ot.mep_effectuee = False

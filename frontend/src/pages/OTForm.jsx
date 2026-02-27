@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+
 const EMPLACEMENT_DEFAULT = 'serveur santé&cie'
+
+// Sera remplacé par un appel API /api/users
+const SIMULATED_USERS = [
+  'Sophie Leroy',
+  'Marc Martin',
+  'Lucas Bernard',
+  'Alice Petit',
+  'Christophe Dubois',
+  'Pierre Lefebvre',
+]
 
 const EMPTY_FORM = {
   numero_ot: '',
@@ -20,14 +31,33 @@ const getDefaultDate = () => {
   return now.toISOString().slice(0, 16)
 }
 
-export default function OTForm({ ots, onSave }) {
+function FieldError({ message }) {
+  if (!message) return null
+  return (
+    <p className="text-[11px] text-red-400 flex items-center gap-1">
+      <span className="material-symbols-outlined text-[14px]">error</span>
+      {message}
+    </p>
+  )
+}
+
+export default function OTForm({ ots, onSave, currentUser }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const isEdit = Boolean(id)
   const existing = isEdit ? ots.find((o) => o.id === parseInt(id)) : null
 
+  const currentUserFullName = currentUser ? `${currentUser.prenom} ${currentUser.nom}` : ''
+
+  // Liste complète pour les selects : l'utilisateur courant en premier
+  const userOptions = [
+    currentUserFullName,
+    ...SIMULATED_USERS.filter((u) => u !== currentUserFullName),
+  ]
+
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     if (isEdit && existing) {
@@ -43,9 +73,13 @@ export default function OTForm({ ots, onSave }) {
         remarque: existing.remarque || '',
       })
     } else {
-      setForm({ ...EMPTY_FORM, date_souhaitee: getDefaultDate() })
+      setForm({
+        ...EMPTY_FORM,
+        date_souhaitee: getDefaultDate(),
+        titulaire: currentUserFullName,
+      })
     }
-  }, [isEdit, existing])
+  }, [isEdit, existing, currentUserFullName])
 
   const validate = () => {
     const newErrors = {}
@@ -55,11 +89,8 @@ export default function OTForm({ ots, onSave }) {
         newErrors[field] = 'Ce champ est obligatoire'
       }
     })
-    // Unicité du numéro d'OT
     const duplicate = ots.find((o) => o.numero_ot === form.numero_ot && o.id !== parseInt(id))
-    if (duplicate) {
-      newErrors.numero_ot = 'Ce numéro d\'OT existe déjà'
-    }
+    if (duplicate) newErrors.numero_ot = "Ce numéro d'OT existe déjà"
     return newErrors
   }
 
@@ -69,15 +100,22 @@ export default function OTForm({ ots, onSave }) {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = validate()
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-    const savedId = onSave(form, isEdit ? parseInt(id) : null)
-    navigate(isEdit ? `/ot/${id}` : `/ot/${savedId}`)
+    setSubmitting(true)
+    try {
+      const savedId = await onSave(form, isEdit ? parseInt(id) : null)
+      navigate(isEdit ? `/ot/${savedId}` : '/')
+    } catch {
+      // erreur gérée dans App.jsx
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const inputClass = (field) =>
@@ -87,7 +125,14 @@ export default function OTForm({ ots, onSave }) {
         : 'border-border-dark focus:border-primary focus:ring-primary'
     }`
 
-  const fields = [
+  const selectClass = (field) =>
+    `w-full bg-input-bg border rounded px-3 py-2.5 text-white text-sm focus:outline-none focus:ring-1 transition-all appearance-none cursor-pointer ${
+      errors[field]
+        ? 'border-danger focus:border-danger focus:ring-danger'
+        : 'border-border-dark focus:border-primary focus:ring-primary'
+    }`
+
+  const textFields = [
     {
       id: 'numero_ot', label: "Numéro de l'OT", required: true,
       placeholder: 'ex: OT-001300', hint: 'Identifiant unique provenant de SAP',
@@ -96,10 +141,6 @@ export default function OTForm({ ots, onSave }) {
     {
       id: 'intitule', label: 'Intitulé (désignation)', required: true,
       placeholder: 'Description de la modification...', type: 'text',
-    },
-    {
-      id: 'titulaire', label: 'Titulaire', required: true,
-      placeholder: 'Nom du responsable', icon: 'person', type: 'text',
     },
     {
       id: 'numero_demande', label: 'Numéro de demande (Mantis/Redmine)', required: true,
@@ -115,11 +156,7 @@ export default function OTForm({ ots, onSave }) {
     },
     {
       id: 'date_souhaitee', label: 'Date et heure souhaitées', required: true,
-      hint: "Heure par défaut : 18h00", icon: 'calendar_today', type: 'datetime-local',
-    },
-    {
-      id: 'demandeur', label: 'Demandeur', required: true,
-      placeholder: 'Nom du demandeur', icon: 'person', type: 'text',
+      hint: 'Heure par défaut : 18h00', icon: 'calendar_today', type: 'datetime-local',
     },
   ]
 
@@ -138,7 +175,7 @@ export default function OTForm({ ots, onSave }) {
           <div className="flex justify-between items-end">
             <div>
               <h1 className="text-3xl font-bold text-white tracking-tight">
-                {isEdit ? 'Modifier l\'OT' : 'Créer un OT'}
+                {isEdit ? "Modifier l'OT" : 'Créer un OT'}
               </h1>
               <p className="text-slate-400 mt-1">
                 {isEdit ? 'Modifiez les informations de cet ordre de transport.' : 'Enregistrez un nouvel ordre de transport SAP.'}
@@ -147,18 +184,20 @@ export default function OTForm({ ots, onSave }) {
             <div className="flex gap-3">
               <button
                 type="button"
+                disabled={submitting}
                 onClick={() => navigate(isEdit ? `/ot/${id}` : '/')}
-                className="px-4 py-2 rounded border border-border-dark text-slate-300 hover:bg-surface-lighter text-sm font-medium transition-colors"
+                className="px-4 py-2 rounded border border-border-dark text-slate-300 hover:bg-surface-lighter text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 form="ot-form"
-                className="px-6 py-2 rounded bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                disabled={submitting}
+                className="px-6 py-2 rounded bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-primary/20 transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <span className="material-symbols-outlined text-[18px]">save</span>
-                {isEdit ? 'Enregistrer' : 'Créer l\'OT'}
+                {isEdit ? 'Enregistrer' : "Créer l'OT"}
               </button>
             </div>
           </div>
@@ -179,7 +218,9 @@ export default function OTForm({ ots, onSave }) {
           <div className="p-6">
             <form id="ot-form" onSubmit={handleSubmit} className="flex flex-col gap-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
-                {fields.map((f) => (
+
+                {/* Champs texte/number/datetime */}
+                {textFields.map((f) => (
                   <div key={f.id} className="flex flex-col gap-2">
                     <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor={f.id}>
                       {f.label} {f.required && <span className="text-red-500">*</span>}
@@ -200,17 +241,71 @@ export default function OTForm({ ots, onSave }) {
                         className={`${inputClass(f.id)} ${f.icon ? 'pl-10' : ''} [color-scheme:dark]`}
                       />
                     </div>
-                    {f.hint && !errors[f.id] && (
-                      <p className="text-[11px] text-slate-600">{f.hint}</p>
-                    )}
-                    {errors[f.id] && (
-                      <p className="text-[11px] text-red-400 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">error</span>
-                        {errors[f.id]}
-                      </p>
-                    )}
+                    {f.hint && !errors[f.id] && <p className="text-[11px] text-slate-600">{f.hint}</p>}
+                    <FieldError message={errors[f.id]} />
                   </div>
                 ))}
+
+                {/* Titulaire — select */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor="titulaire">
+                    Titulaire <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="material-symbols-outlined text-slate-600 text-[18px]">person</span>
+                    </div>
+                    <select
+                      id="titulaire"
+                      name="titulaire"
+                      value={form.titulaire}
+                      onChange={handleChange}
+                      className={`${selectClass('titulaire')} pl-10 pr-8`}
+                    >
+                      <option value="" disabled>Sélectionner un titulaire</option>
+                      {userOptions.map((name) => (
+                        <option key={name} value={name}>
+                          {name}{name === currentUserFullName ? ' (Moi)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <span className="material-symbols-outlined text-slate-600 text-[16px]">expand_more</span>
+                    </div>
+                  </div>
+                  <FieldError message={errors.titulaire} />
+                </div>
+
+                {/* Demandeur — select */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor="demandeur">
+                    Demandeur <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="material-symbols-outlined text-slate-600 text-[18px]">person</span>
+                    </div>
+                    <select
+                      id="demandeur"
+                      name="demandeur"
+                      value={form.demandeur}
+                      onChange={handleChange}
+                      className={`${selectClass('demandeur')} pl-10 pr-8`}
+                    >
+                      <option value="" disabled>Sélectionner un demandeur</option>
+                      {userOptions.map((name) => (
+                        <option key={name} value={name}>
+                          {name}{name === currentUserFullName ? ' (Moi)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <span className="material-symbols-outlined text-slate-600 text-[16px]">expand_more</span>
+                    </div>
+                  </div>
+                  <FieldError message={errors.demandeur} />
+                </div>
+
               </div>
 
               {/* Emplacement (disabled) */}

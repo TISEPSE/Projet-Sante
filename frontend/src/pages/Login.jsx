@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { login } from '../services/api'
 
 export default function Login({ onLogin }) {
@@ -101,9 +101,16 @@ export default function Login({ onLogin }) {
               disabled={submitting}
               className="mt-2 w-full h-12 bg-primary hover:bg-blue-600 text-white font-semibold rounded shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <span>{submitting ? 'Connexion...' : 'Se connecter'}</span>
-              {!submitting && <span className="material-symbols-outlined text-sm">arrow_forward</span>}
+              <span>Se connecter</span>
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </button>
+
+            <p className="text-center text-sm text-slate-500">
+              Pas encore de compte ?{' '}
+              <Link to="/register" className="text-primary hover:text-blue-400 font-medium transition-colors">
+                Créer un compte
+              </Link>
+            </p>
           </form>
         </div>
 

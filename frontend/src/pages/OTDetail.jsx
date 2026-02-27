@@ -58,6 +58,7 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
   const [showMEPModal, setShowMEPModal] = useState(false)
   const [showCancelMEPModal, setShowCancelMEPModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [pending, setPending] = useState(null) // 'mep' | 'cancel_mep' | 'delete'
 
   const ot = ots.find((o) => o.id === parseInt(id))
 
@@ -73,19 +74,35 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
     )
   }
 
-  const handleValidateMEP = () => {
-    onValidateMEP(ot.id, currentUser)
+  const handleValidateMEP = async () => {
     setShowMEPModal(false)
+    setPending('mep')
+    try {
+      await onValidateMEP(ot.id, currentUser)
+    } finally {
+      setPending(null)
+    }
   }
 
-  const handleCancelMEP = () => {
-    onCancelMEP(ot.id)
+  const handleCancelMEP = async () => {
     setShowCancelMEPModal(false)
+    setPending('cancel_mep')
+    try {
+      await onCancelMEP(ot.id)
+    } finally {
+      setPending(null)
+    }
   }
 
-  const handleDelete = () => {
-    onDelete(ot.id)
-    navigate('/')
+  const handleDelete = async () => {
+    setShowDeleteModal(false)
+    setPending('delete')
+    try {
+      await onDelete(ot.id)
+      navigate('/')
+    } finally {
+      setPending(null)
+    }
   }
 
   const deployDate = new Date(ot.date_souhaitee)
@@ -115,7 +132,8 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
           </button>
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-danger/30 text-danger rounded hover:bg-danger/10 text-sm font-medium transition-all"
+            disabled={!!pending}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-danger/30 text-danger rounded hover:bg-danger/10 text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="material-symbols-outlined text-[16px]">delete</span>
             Supprimer
@@ -257,7 +275,8 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
                   </div>
                   <button
                     onClick={() => setShowMEPModal(true)}
-                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+                    disabled={!!pending}
+                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
                     Valider la MEP
@@ -290,7 +309,8 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
                   </Field>
                   <button
                     onClick={() => setShowCancelMEPModal(true)}
-                    className="w-full flex items-center justify-center gap-2 border border-danger/30 text-danger hover:bg-danger/10 text-sm font-medium py-2 px-4 rounded transition-all mt-1"
+                    disabled={!!pending}
+                    className="w-full flex items-center justify-center gap-2 border border-danger/30 text-danger hover:bg-danger/10 text-sm font-medium py-2 px-4 rounded transition-all mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="material-symbols-outlined text-[16px]">cancel</span>
                     Annuler la MEP
