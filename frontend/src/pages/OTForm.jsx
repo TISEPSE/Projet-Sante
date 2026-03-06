@@ -165,13 +165,18 @@ export default function OTForm({ ots, onSave, currentUser }) {
       <div className="max-w-4xl mx-auto p-6 md:p-8 flex flex-col gap-6">
         {/* Header */}
         <div className="flex flex-col gap-4">
-          <nav className="flex text-sm font-medium text-slate-500">
-            <button onClick={() => navigate('/')} className="hover:text-primary transition-colors">
-              Liste des OT
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate(isEdit ? `/ot/${id}` : '/')}
+              className="flex items-center gap-1.5 text-slate-400 hover:text-white hover:bg-surface-lighter px-2 py-1.5 rounded transition-colors"
+            >
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+              <span className="text-sm font-medium">Retour</span>
             </button>
-            <span className="mx-2">/</span>
-            <span className="text-white">{isEdit ? `Modifier ${existing?.numero_ot}` : 'Créer un OT'}</span>
-          </nav>
+            <div className="h-4 w-px bg-border-dark" />
+            <span className="text-sm text-slate-500">{isEdit ? existing?.numero_ot : 'Nouvel OT'}</span>
+          </div>
           <div className="flex justify-between items-end">
             <div>
               <h1 className="text-3xl font-bold text-white tracking-tight">

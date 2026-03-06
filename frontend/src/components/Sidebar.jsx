@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 
-export default function Sidebar({ user }) {
+export default function Sidebar({ user, onLogout }) {
   const navigate = useNavigate()
 
   return (
@@ -63,7 +63,7 @@ export default function Sidebar({ user }) {
             </div>
           </div>
           <button
-            onClick={() => navigate('/login')}
+            onClick={onLogout}
             className="flex w-full items-center justify-center gap-2 rounded bg-border-dark hover:bg-white/10 text-xs font-medium text-slate-300 h-8 transition-colors"
           >
             <span className="material-symbols-outlined text-[16px]">logout</span>

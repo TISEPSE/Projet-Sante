@@ -48,10 +48,13 @@ def login():
 @auth_bp.post('/api/auth/register')
 def register():
     data = request.get_json()
-    required = ['prenom', 'nom', 'email', 'password']
+    required = ['prenom', 'nom', 'email', 'password', 'role']
     missing = [f for f in required if not data or not data.get(f, '').strip()]
     if missing:
         return jsonify({'message': 'Tous les champs sont obligatoires'}), 400
+
+    if data['role'] not in ('responsable', 'developpeur'):
+        return jsonify({'message': 'Rôle invalide'}), 400
 
     if Utilisateur.query.filter_by(email=data['email'].lower().strip()).first():
         return jsonify({'message': 'Un compte avec cet email existe déjà'}), 409
@@ -60,6 +63,7 @@ def register():
         prenom=data['prenom'].strip(),
         nom=data['nom'].strip(),
         email=data['email'].lower().strip(),
+        role=data['role'],
     )
     user.set_password(data['password'])
     db.session.add(user)
@@ -73,3 +77,10 @@ def register():
 @auth_required
 def me():
     return jsonify(g.current_user.to_dict())
+
+
+@auth_bp.get('/api/users')
+@auth_required
+def list_users():
+    users = Utilisateur.query.order_by(Utilisateur.nom, Utilisateur.prenom).all()
+    return jsonify([u.to_dict() for u in users])

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { register } from '../services/api'
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
+  const [role, setRole] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
@@ -17,8 +18,9 @@ export default function Register() {
     const email = String(formData.get('email') || '').trim()
     const password = String(formData.get('password') || '')
     const confirm = String(formData.get('confirm') || '')
+    const role = String(formData.get('role') || '')
 
-    if (!prenom || !nom || !email || !password) {
+    if (!prenom || !nom || !email || !password || !role) {
       setError('Tous les champs sont obligatoires')
       return
     }
@@ -33,7 +35,7 @@ export default function Register() {
 
     setSubmitting(true)
     try {
-      await register(prenom, nom, email, password)
+      await register(prenom, nom, email, password, role)
       navigate('/login')
     } catch (err) {
       setError(err.message || 'Erreur lors de la création du compte')
@@ -144,6 +146,33 @@ export default function Register() {
                 placeholder="••••••••••••"
                 className={inputBase}
               />
+            </div>
+
+            {/* Rôle */}
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-slate-300">Rôle <span className="text-red-500">*</span></span>
+              <input type="hidden" name="role" value={role} />
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'developpeur', label: 'Développeur', icon: 'code', desc: 'Crée et déploie les OTs' },
+                  { value: 'responsable', label: 'Responsable', icon: 'manage_accounts', desc: 'Supervise les équipes' },
+                ].map(({ value, label, icon, desc }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setRole(value)}
+                    className={`flex flex-col items-center gap-2 p-4 rounded border-2 transition-all text-center ${
+                      role === value
+                        ? 'border-primary bg-primary/10 text-white'
+                        : 'border-border-dark bg-input-bg text-slate-400 hover:border-slate-500'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-2xl">{icon}</span>
+                    <span className="text-sm font-semibold">{label}</span>
+                    <span className="text-[11px] text-slate-500">{desc}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {error && (

@@ -41,11 +41,15 @@ export async function login(email, password) {
   return data
 }
 
-export async function register(prenom, nom, email, password) {
+export async function register(prenom, nom, email, password, role) {
   return request('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ prenom, nom, email, password }),
+    body: JSON.stringify({ prenom, nom, email, password, role }),
   })
+}
+
+export async function fetchUsers() {
+  return request('/users')
 }
 
 export function logout() {

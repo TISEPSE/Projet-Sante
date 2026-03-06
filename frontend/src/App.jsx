@@ -7,11 +7,12 @@ import Register from './pages/Register'
 import OTList from './pages/OTList'
 import OTDetail from './pages/OTDetail'
 import OTForm from './pages/OTForm'
+import Settings from './pages/Settings'
 
 function Layout({ children, user }) {
   return (
     <div className="flex h-screen bg-bg-dark overflow-hidden">
-      <Sidebar user={user} />
+      <Sidebar user={user} onLogout={handleLogout} />
       <div className="ml-64 flex-1 overflow-hidden flex flex-col">
         {children}
       </div>
@@ -175,6 +176,18 @@ export default function App() {
             isLoggedIn ? (
               <Layout user={user}>
                 <OTForm ots={ots} onSave={handleSave} currentUser={user} />
+              </Layout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/parametres"
+          element={
+            isLoggedIn ? (
+              <Layout user={user}>
+                <Settings currentUser={user} />
               </Layout>
             ) : (
               <Navigate to="/login" replace />

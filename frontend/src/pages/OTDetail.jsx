@@ -113,11 +113,15 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
       {/* Header — même structure que OTList */}
       <header className="h-16 bg-bg-dark border-b border-border-dark flex items-center justify-between px-6 flex-shrink-0">
         <div className="flex items-center gap-3 min-w-0">
-          {/* Breadcrumb */}
-          <nav className="flex text-xs text-slate-500 items-center gap-1 shrink-0">
-            <button onClick={() => navigate('/')} className="hover:text-primary transition-colors">Liste des OT</button>
-            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-          </nav>
+          {/* Bouton retour */}
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-1.5 text-slate-400 hover:text-white hover:bg-surface-lighter px-2 py-1.5 rounded transition-colors shrink-0"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            <span className="text-sm font-medium">Retour</span>
+          </button>
+          <div className="h-4 w-px bg-border-dark shrink-0" />
           <h1 className="text-lg font-semibold text-slate-100 truncate">{ot.numero_ot}</h1>
           <StatusBadge mepEffectuee={ot.mep_effectuee} />
         </div>
@@ -319,14 +323,7 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
               </Panel>
             )}
 
-            <button
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-slate-500 hover:text-slate-200 text-sm transition-colors px-1"
-            >
-              <span className="material-symbols-outlined text-[17px]">arrow_back</span>
-              Retour à la liste
-            </button>
-          </div>
+            </div>
         </div>
       </div>
       </div>
