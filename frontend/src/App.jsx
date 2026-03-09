@@ -8,11 +8,12 @@ import OTList from './pages/OTList'
 import OTDetail from './pages/OTDetail'
 import OTForm from './pages/OTForm'
 import Settings from './pages/Settings'
+import UserProfile from './pages/UserProfile'
 
-function Layout({ children, user }) {
+function Layout({ children, user, onLogout }) {
   return (
     <div className="flex h-screen bg-bg-dark overflow-hidden">
-      <Sidebar user={user} onLogout={handleLogout} />
+      <Sidebar user={user} onLogout={onLogout} />
       <div className="ml-64 flex-1 overflow-hidden flex flex-col">
         {children}
       </div>
@@ -132,7 +133,7 @@ export default function App() {
           path="/"
           element={
             isLoggedIn ? (
-              <Layout user={user}>
+              <Layout user={user} onLogout={handleLogout}>
                 <OTList ots={ots} />
               </Layout>
             ) : (
@@ -144,7 +145,7 @@ export default function App() {
           path="/ot/new"
           element={
             isLoggedIn ? (
-              <Layout user={user}>
+              <Layout user={user} onLogout={handleLogout}>
                 <OTForm ots={ots} onSave={handleSave} currentUser={user} />
               </Layout>
             ) : (
@@ -156,7 +157,7 @@ export default function App() {
           path="/ot/:id"
           element={
             isLoggedIn ? (
-              <Layout user={user}>
+              <Layout user={user} onLogout={handleLogout}>
                 <OTDetail
                   ots={ots}
                   onValidateMEP={handleValidateMEP}
@@ -174,7 +175,7 @@ export default function App() {
           path="/ot/:id/edit"
           element={
             isLoggedIn ? (
-              <Layout user={user}>
+              <Layout user={user} onLogout={handleLogout}>
                 <OTForm ots={ots} onSave={handleSave} currentUser={user} />
               </Layout>
             ) : (
@@ -186,8 +187,20 @@ export default function App() {
           path="/parametres"
           element={
             isLoggedIn ? (
-              <Layout user={user}>
+              <Layout user={user} onLogout={handleLogout}>
                 <Settings currentUser={user} />
+              </Layout>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/profil/:id"
+          element={
+            isLoggedIn ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <UserProfile currentUser={user} />
               </Layout>
             ) : (
               <Navigate to="/login" replace />

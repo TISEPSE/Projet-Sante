@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import ConfirmModal from '../components/ConfirmModal'
 import StatusBadge from '../components/StatusBadge'
+import ProfileModal from '../components/ProfileModal'
 
 function formatDate(dateStr) {
   if (!dateStr) return '—'
@@ -59,6 +60,7 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
   const [showCancelMEPModal, setShowCancelMEPModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [pending, setPending] = useState(null) // 'mep' | 'cancel_mep' | 'delete'
+  const [profileModalId, setProfileModalId] = useState(null)
 
   const ot = ots.find((o) => o.id === parseInt(id))
 
@@ -179,6 +181,24 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
                     </div>
                     <span className="text-slate-200 text-sm">{ot.titulaire}</span>
                   </div>
+                </Field>
+                <Field label="Encadrant (responsable du titulaire)">
+                  {ot.responsable_titulaire ? (
+                    <button
+                      onClick={() => setProfileModalId(ot.responsable_titulaire.id)}
+                      className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-purple-900/60 border border-purple-600/40 flex items-center justify-center text-[11px] font-bold text-purple-300 shrink-0">
+                        {ot.responsable_titulaire.prenom[0]}{ot.responsable_titulaire.nom[0]}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-slate-200 text-sm">{ot.responsable_titulaire.prenom} {ot.responsable_titulaire.nom}</span>
+                        <span className="text-slate-600 text-xs">Voir le profil</span>
+                      </div>
+                    </button>
+                  ) : (
+                    <span className="text-slate-600 text-sm">—</span>
+                  )}
                 </Field>
                 <Field label="Demandeur">
                   <div className="flex items-center gap-2">
@@ -327,6 +347,14 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
         </div>
       </div>
       </div>
+
+      {profileModalId && (
+        <ProfileModal
+          userId={profileModalId}
+          currentUser={currentUser}
+          onClose={() => setProfileModalId(null)}
+        />
+      )}
 
       {showMEPModal && (
         <ConfirmModal

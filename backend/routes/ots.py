@@ -1,9 +1,25 @@
 from flask import Blueprint, request, jsonify, g
-from models import db, OrdreTransport
+from models import db, OrdreTransport, Utilisateur
 from routes.auth import auth_required
 from datetime import datetime
 
 ots_bp = Blueprint('ots', __name__)
+
+
+def _find_responsable(titulaire_name, users_by_name, users_by_id):
+    """Retourne le to_dict() du responsable du titulaire, ou None."""
+    tit = users_by_name.get(titulaire_name)
+    if tit and tit.responsable_id:
+        resp = users_by_id.get(tit.responsable_id)
+        return resp.to_dict() if resp else None
+    return None
+
+
+def _load_user_maps():
+    users = Utilisateur.query.all()
+    by_name = {f"{u.prenom} {u.nom}": u for u in users}
+    by_id = {u.id: u for u in users}
+    return by_name, by_id
 
 
 @ots_bp.get('/api/ots')
@@ -12,7 +28,13 @@ def list_ots():
     ots = OrdreTransport.query.order_by(
         OrdreTransport.lot_transport, OrdreTransport.ordre_passage
     ).all()
-    return jsonify([ot.to_dict() for ot in ots])
+    by_name, by_id = _load_user_maps()
+    result = []
+    for ot in ots:
+        d = ot.to_dict()
+        d['responsable_titulaire'] = _find_responsable(ot.titulaire, by_name, by_id)
+        result.append(d)
+    return jsonify(result)
 
 
 @ots_bp.post('/api/ots')
@@ -39,40 +61,52 @@ def create_ot():
     )
     db.session.add(ot)
     db.session.commit()
-    return jsonify(ot.to_dict()), 201
+    by_name, by_id = _load_user_maps()
+    d = ot.to_dict()
+    d['responsable_titulaire'] = _find_responsable(ot.titulaire, by_name, by_id)
+    return jsonify(d), 201
 
 
 @ots_bp.get('/api/ots/<int:ot_id>')
 @auth_required
 def get_ot(ot_id):
-    ot = OrdreTransport.query.get_or_404(ot_id)
-    return jsonify(ot.to_dict())
+    ot = db.session.get(OrdreTransport, ot_id)
+    if not ot:
+        return jsonify({'message': 'OT introuvable'}), 404
+    by_name, by_id = _load_user_maps()
+    d = ot.to_dict()
+    d['responsable_titulaire'] = _find_responsable(ot.titulaire, by_name, by_id)
+    return jsonify(d)
 
 
 @ots_bp.put('/api/ots/<int:ot_id>')
 @auth_required
 def update_ot(ot_id):
-    ot = OrdreTransport.query.get_or_404(ot_id)
+    ot = db.session.get(OrdreTransport, ot_id)
+    if not ot:
+        return jsonify({'message': 'OT introuvable'}), 404
     data = request.get_json()
     if not data:
         return jsonify({'message': 'Aucune donnée fournie'}), 400
 
-    fields = [
-        'numero_ot', 'intitule', 'titulaire', 'numero_demande',
-        'lot_transport', 'ordre_passage', 'date_souhaitee', 'demandeur', 'remarque',
-    ]
-    for field in fields:
+    for field in ['numero_ot', 'intitule', 'titulaire', 'numero_demande',
+                  'lot_transport', 'ordre_passage', 'date_souhaitee', 'demandeur', 'remarque']:
         if field in data:
             setattr(ot, field, data[field])
 
     db.session.commit()
-    return jsonify(ot.to_dict())
+    by_name, by_id = _load_user_maps()
+    d = ot.to_dict()
+    d['responsable_titulaire'] = _find_responsable(ot.titulaire, by_name, by_id)
+    return jsonify(d)
 
 
 @ots_bp.delete('/api/ots/<int:ot_id>')
 @auth_required
 def delete_ot(ot_id):
-    ot = OrdreTransport.query.get_or_404(ot_id)
+    ot = db.session.get(OrdreTransport, ot_id)
+    if not ot:
+        return jsonify({'message': 'OT introuvable'}), 404
     db.session.delete(ot)
     db.session.commit()
     return '', 204
@@ -81,21 +115,31 @@ def delete_ot(ot_id):
 @ots_bp.post('/api/ots/<int:ot_id>/mep')
 @auth_required
 def validate_mep(ot_id):
-    ot = OrdreTransport.query.get_or_404(ot_id)
+    ot = db.session.get(OrdreTransport, ot_id)
+    if not ot:
+        return jsonify({'message': 'OT introuvable'}), 404
     user = g.current_user
     ot.mep_effectuee = True
     ot.mep_effectuee_par = f"{user.prenom} {user.nom}"
     ot.mep_date = datetime.utcnow().strftime('%Y-%m-%dT%H:%M')
     db.session.commit()
-    return jsonify(ot.to_dict())
+    by_name, by_id = _load_user_maps()
+    d = ot.to_dict()
+    d['responsable_titulaire'] = _find_responsable(ot.titulaire, by_name, by_id)
+    return jsonify(d)
 
 
 @ots_bp.delete('/api/ots/<int:ot_id>/mep')
 @auth_required
 def cancel_mep(ot_id):
-    ot = OrdreTransport.query.get_or_404(ot_id)
+    ot = db.session.get(OrdreTransport, ot_id)
+    if not ot:
+        return jsonify({'message': 'OT introuvable'}), 404
     ot.mep_effectuee = False
     ot.mep_effectuee_par = None
     ot.mep_date = None
     db.session.commit()
-    return jsonify(ot.to_dict())
+    by_name, by_id = _load_user_maps()
+    d = ot.to_dict()
+    d['responsable_titulaire'] = _find_responsable(ot.titulaire, by_name, by_id)
+    return jsonify(d)

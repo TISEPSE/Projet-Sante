@@ -84,4 +84,16 @@ export async function cancelMEP(id) {
   return request(`/ots/${id}/mep`, { method: 'DELETE' })
 }
 
+export async function fetchUser(id) {
+  return request(`/users/${id}`)
+}
+
+export async function addToTeam(devId) {
+  return request(`/equipe/${devId}`, { method: 'POST' })
+}
+
+export async function removeFromTeam(devId) {
+  return request(`/equipe/${devId}`, { method: 'DELETE' })
+}
+
 export { getToken }

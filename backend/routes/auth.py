@@ -84,3 +84,61 @@ def me():
 def list_users():
     users = Utilisateur.query.order_by(Utilisateur.nom, Utilisateur.prenom).all()
     return jsonify([u.to_dict() for u in users])
+
+
+@auth_bp.get('/api/users/<int:user_id>')
+@auth_required
+def get_user(user_id):
+    user = db.session.get(Utilisateur, user_id)
+    if not user:
+        return jsonify({'message': 'Utilisateur introuvable'}), 404
+    data = user.to_dict()
+    if user.role == 'responsable':
+        team = Utilisateur.query.filter_by(responsable_id=user.id).order_by(
+            Utilisateur.nom, Utilisateur.prenom
+        ).all()
+        data['responsable'] = None
+        data['equipe'] = [m.to_dict() for m in team]
+    else:
+        if user.responsable_id:
+            resp = db.session.get(Utilisateur, user.responsable_id)
+            data['responsable'] = resp.to_dict() if resp else None
+            colleagues = Utilisateur.query.filter(
+                Utilisateur.responsable_id == user.responsable_id,
+                Utilisateur.id != user.id
+            ).order_by(Utilisateur.nom, Utilisateur.prenom).all()
+            data['equipe'] = [c.to_dict() for c in colleagues]
+        else:
+            data['responsable'] = None
+            data['equipe'] = []
+    return jsonify(data)
+
+
+@auth_bp.post('/api/equipe/<int:dev_id>')
+@auth_required
+def add_to_team(dev_id):
+    if g.current_user.role != 'responsable':
+        return jsonify({'message': 'Réservé aux responsables'}), 403
+    dev = db.session.get(Utilisateur, dev_id)
+    if not dev:
+        return jsonify({'message': 'Utilisateur introuvable'}), 404
+    if dev.role != 'developpeur':
+        return jsonify({'message': 'Cible non développeur'}), 400
+    dev.responsable_id = g.current_user.id
+    db.session.commit()
+    return jsonify(dev.to_dict())
+
+
+@auth_bp.delete('/api/equipe/<int:dev_id>')
+@auth_required
+def remove_from_team(dev_id):
+    if g.current_user.role != 'responsable':
+        return jsonify({'message': 'Réservé aux responsables'}), 403
+    dev = db.session.get(Utilisateur, dev_id)
+    if not dev:
+        return jsonify({'message': 'Utilisateur introuvable'}), 404
+    if dev.responsable_id != g.current_user.id:
+        return jsonify({'message': "Ce développeur n'est pas dans votre équipe"}), 403
+    dev.responsable_id = None
+    db.session.commit()
+    return jsonify(dev.to_dict())
