@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Use Case — Projet-Sante</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0d1117;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+    svg { border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+  </style>
+</head>
+<body>
+<svg width="760" height="800" xmlns="http://www.w3.org/2000/svg">
+
+  <rect width="760" height="800" fill="#16213e"/>
+
+  <!-- TITRE -->
+  <text x="458" y="25" text-anchor="middle" font-size="13" font-weight="bold"
+        fill="#a8b8d8" letter-spacing="1">Système — Projet-Sante</text>
+
+  <!-- SÉPARATEUR VERTICAL -->
+  <line x1="155" y1="33" x2="155" y2="770" stroke="#2d3d5c" stroke-width="1.5"/>
+
+  <!-- FLÈCHE -->
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#7a9abf"/>
+    </marker>
+  </defs>
+
+
+  <!-- ═══════════════════════════
+       VISITEUR  (y≈60)
+  ═══════════════════════════ -->
+  <circle cx="65" cy="60"  r="16" fill="none" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="76"  x2="65" y2="120" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="41" y1="98"  x2="89" y2="98"  stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="120" x2="45" y2="150" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="120" x2="85" y2="150" stroke="#c0d0e8" stroke-width="1.8"/>
+  <text x="65" y="168" text-anchor="middle" font-size="12" font-weight="bold" fill="#c0d0e8">Visiteur</text>
+
+  <!-- Liens acteur → CU directs -->
+  <line x1="89" y1="98" x2="229" y2="75"  stroke="#7a9abf" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="89" y1="98" x2="220" y2="122" stroke="#7a9abf" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <ellipse cx="295" cy="75"  rx="64" ry="19" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="295" y="79"  text-anchor="middle" font-size="11" fill="#ddeeff">S'inscrire</text>
+
+  <ellipse cx="295" cy="122" rx="73" ry="19" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="295" y="126" text-anchor="middle" font-size="11" fill="#ddeeff">Se connecter</text>
+
+
+  <!-- ═══════════════════════════
+       UTILISATEUR  (y≈310)
+  ═══════════════════════════ -->
+  <circle cx="65" cy="310" r="16" fill="none" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="326" x2="65" y2="370" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="41" y1="348" x2="89" y2="348" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="370" x2="45" y2="400" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="370" x2="85" y2="400" stroke="#c0d0e8" stroke-width="1.8"/>
+  <text x="65" y="419" text-anchor="middle" font-size="12" font-weight="bold" fill="#c0d0e8">Utilisateur</text>
+  <text x="65" y="435" text-anchor="middle" font-size="12" font-weight="bold" fill="#c0d0e8">authentifié</text>
+
+  <!-- Acteur → hub -->
+  <line x1="89" y1="348" x2="178" y2="348" stroke="#7a9abf" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <!-- HUB -->
+  <ellipse cx="262" cy="348" rx="82" ry="21" fill="#1a2845" stroke="#8899cc" stroke-width="1.8"/>
+  <text  x="262" cy="352" y="352" text-anchor="middle" font-size="11" font-weight="bold" fill="#ddeeff">Espace Utilisateur</text>
+
+  <!-- 10 rayons hub(344,348) → CU(cx=555)
+       cy : 180 218 256 294 330 366 402 440 478 516  -->
+  <line x1="344" y1="348" x2="459" y2="180" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="455" y2="218" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="458" y2="256" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="493" y2="294" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="487" y2="330" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="482" y2="366" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="480" y2="402" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="480" y2="440" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="473" y2="478" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="344" y1="348" x2="487" y2="516" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 10 CU -->
+  <ellipse cx="555" cy="180" rx="96"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="184" text-anchor="middle" font-size="10" fill="#ddeeff">Consulter la liste des OT</text>
+
+  <ellipse cx="555" cy="218" rx="100" ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="222" text-anchor="middle" font-size="10" fill="#ddeeff">Consulter le détail d'un OT</text>
+
+  <ellipse cx="555" cy="256" rx="97"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="260" text-anchor="middle" font-size="10" fill="#ddeeff">Rechercher / filtrer les OT</text>
+
+  <ellipse cx="555" cy="294" rx="62"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="298" text-anchor="middle" font-size="10" fill="#ddeeff">Créer un OT</text>
+
+  <ellipse cx="555" cy="330" rx="68"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="334" text-anchor="middle" font-size="10" fill="#ddeeff">Modifier un OT</text>
+
+  <ellipse cx="555" cy="366" rx="73"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="370" text-anchor="middle" font-size="10" fill="#ddeeff">Supprimer un OT</text>
+
+  <ellipse cx="555" cy="402" rx="75"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="406" text-anchor="middle" font-size="10" fill="#ddeeff">Valider une MEP</text>
+
+  <ellipse cx="555" cy="440" rx="75"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="444" text-anchor="middle" font-size="10" fill="#ddeeff">Annuler une MEP</text>
+
+  <ellipse cx="555" cy="478" rx="82"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="482" text-anchor="middle" font-size="10" fill="#ddeeff">Consulter son profil</text>
+
+  <ellipse cx="555" cy="516" rx="68"  ry="18" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="555" y="520" text-anchor="middle" font-size="10" fill="#ddeeff">Se déconnecter</text>
+
+
+  <!-- ═══════════════════════════
+       RESPONSABLE  (y≈555)
+  ═══════════════════════════ -->
+  <circle cx="65" cy="556" r="15" fill="none" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="571" x2="65" y2="611" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="43" y1="591" x2="87" y2="591" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="611" x2="47" y2="639" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="611" x2="83" y2="639" stroke="#c0d0e8" stroke-width="1.8"/>
+  <text x="65" y="656" text-anchor="middle" font-size="12" font-weight="bold" fill="#c0d0e8">Responsable</text>
+
+  <!-- Acteur → hub -->
+  <line x1="87" y1="591" x2="170" y2="591" stroke="#7a9abf" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <!-- HUB -->
+  <ellipse cx="263" cy="591" rx="91" ry="20" fill="#1a2845" stroke="#8899cc" stroke-width="1.8"/>
+  <text  x="263" y="595" text-anchor="middle" font-size="11" font-weight="bold" fill="#ddeeff">Espace Responsable</text>
+
+  <!-- Hub → CU -->
+  <line x1="354" y1="591" x2="455" y2="591" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <ellipse cx="557" cy="591" rx="100" ry="19" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="557" y="595" text-anchor="middle" font-size="10" fill="#ddeeff">Gérer les équipes</text>
+
+
+  <!-- ═══════════════════════════
+       ADMIN  (y≈672)
+  ═══════════════════════════ -->
+  <circle cx="65" cy="672" r="15" fill="none" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="687" x2="65" y2="727" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="43" y1="707" x2="87" y2="707" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="727" x2="47" y2="755" stroke="#c0d0e8" stroke-width="1.8"/>
+  <line x1="65" y1="727" x2="83" y2="755" stroke="#c0d0e8" stroke-width="1.8"/>
+  <text x="65" y="773" text-anchor="middle" font-size="12" font-weight="bold" fill="#c0d0e8">Admin</text>
+  <text x="65" y="787" text-anchor="middle" font-size="10"  fill="#8899bb" font-style="italic">« système »</text>
+
+  <!-- Acteur → hub -->
+  <line x1="87" y1="707" x2="192" y2="707" stroke="#7a9abf" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <!-- HUB -->
+  <ellipse cx="264" cy="707" rx="70" ry="20" fill="#1a2845" stroke="#8899cc" stroke-width="1.8"/>
+  <text  x="264" y="711" text-anchor="middle" font-size="11" font-weight="bold" fill="#ddeeff">Espace Admin</text>
+
+  <!-- Hub → CU -->
+  <line x1="334" y1="707" x2="443" y2="707" stroke="#7a9abf" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <ellipse cx="557" cy="707" rx="112" ry="19" fill="#0f1a2e" stroke="#5d7aa8" stroke-width="1.5"/>
+  <text  x="557" y="711" text-anchor="middle" font-size="10" fill="#ddeeff">Gérer les utilisateurs</text>
+
+</svg>
+</body>
+</html>

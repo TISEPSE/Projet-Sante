@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Architecture — Projet-Sante</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #e8eaf0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+    svg { border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
+  </style>
+</head>
+<body>
+<svg width="680" height="600" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#555"/>
+    </marker>
+  </defs>
+
+  <!-- FOND BLANC -->
+  <rect width="680" height="600" fill="white"/>
+
+
+  <!-- ══════════════════════════════
+       CLIENT
+  ══════════════════════════════ -->
+  <rect x="82" y="14" width="220" height="130" rx="5" fill="#1a237e" stroke="#3949ab" stroke-width="1.5"/>
+  <text x="192" y="37" text-anchor="middle" font-size="14" fill="white">Client</text>
+
+  <!-- Cylindre Navigateur -->
+  <rect x="128" y="63" width="128" height="56" fill="#3949ab"/>
+  <ellipse cx="192" cy="119" rx="64" ry="14" fill="#5c6bc0"/>
+  <ellipse cx="192" cy="63"  rx="64" ry="14" fill="#7986cb"/>
+  <text x="192" y="96" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Navigateur</text>
+
+
+  <!-- ══ Flèche HTTP ══ -->
+  <line x1="192" y1="144" x2="192" y2="222" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="199" y="166" width="52" height="20" rx="3" fill="white" stroke="#bbb" stroke-width="0.8"/>
+  <text x="225" y="180" text-anchor="middle" font-size="12" fill="#333">HTTP</text>
+
+
+  <!-- ══════════════════════════════
+       FRONTEND
+  ══════════════════════════════ -->
+  <rect x="14" y="224" width="368" height="100" rx="5" fill="#004d40" stroke="#00796b" stroke-width="1.5"/>
+  <text x="198" y="246" text-anchor="middle" font-size="13" fill="#b2dfdb">Frontend</text>
+
+  <!-- React inner -->
+  <rect x="26" y="254" width="344" height="56" rx="4" fill="#00bcd4"/>
+  <text x="198" y="278" text-anchor="middle" font-size="13" font-weight="bold" fill="white">React 19 / Vite</text>
+  <text x="198" y="297" text-anchor="middle" font-size="12" fill="white">Port 5173</text>
+
+
+  <!-- ══ Flèche REST API ══ -->
+  <line x1="192" y1="324" x2="192" y2="406" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="196" y="350" width="134" height="20" rx="3" fill="white" stroke="#bbb" stroke-width="0.8"/>
+  <text x="263" y="364" text-anchor="middle" font-size="11" fill="#333">REST API /api/*</text>
+
+
+  <!-- ══════════════════════════════
+       BACKEND
+  ══════════════════════════════ -->
+  <rect x="14" y="408" width="356" height="118" rx="5" fill="#12005e" stroke="#4a148c" stroke-width="1.5"/>
+  <text x="192" y="430" text-anchor="middle" font-size="13" fill="#ce93d8">Backend</text>
+
+  <!-- Flask inner -->
+  <rect x="26" y="440" width="234" height="70" rx="4" fill="#6a1b9a"/>
+  <text x="143" y="468" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Flask API</text>
+  <text x="143" y="489" text-anchor="middle" font-size="12" fill="white">Port 5000</text>
+
+
+  <!-- ══════════════════════════════
+       BASE DE DONNÉES
+  ══════════════════════════════ -->
+  <rect x="390" y="408" width="272" height="148" rx="5" fill="#283593" stroke="#3f51b5" stroke-width="1.5"/>
+  <text x="526" y="430" text-anchor="middle" font-size="13" fill="#c5cae9">Base de données</text>
+
+  <!-- Cylindre PostgreSQL -->
+  <rect x="458" y="452" width="136" height="60" fill="#1565c0"/>
+  <ellipse cx="526" cy="512" rx="68" ry="15" fill="#1976d2"/>
+  <ellipse cx="526" cy="452" rx="68" ry="15" fill="#42a5f5"/>
+  <text x="526" y="477" text-anchor="middle" font-size="12" font-weight="bold" fill="white">PostgreSQL 15</text>
+  <text x="526" y="496" text-anchor="middle" font-size="11" fill="white">Port 5432</text>
+
+
+  <!-- ══ Flèche Flask → PostgreSQL (SQLAlchemy) ══ -->
+  <line x1="260" y1="475" x2="388" y2="475" stroke="#9c27b0" stroke-width="1.4" marker-end="url(#arr)"/>
+  <rect x="281" y="455" width="90" height="20" rx="3" fill="white" stroke="#bbb" stroke-width="0.8"/>
+  <text x="326" y="469" text-anchor="middle" font-size="11" fill="#333">SQLAlchemy</text>
+
+</svg>
+</body>
+</html>
