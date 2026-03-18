@@ -22,6 +22,10 @@ env/
 # Base de données
 *.db
 *.sqlite3
+backend/instance/
+backend/instance/*.db
+backend/instance/*.sqlite
+backend/instance/*.sqlite3
 
 # Logs
 *.log

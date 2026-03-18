@@ -1,27 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import * as api from '../services/api'
 
 const EMPLACEMENT_DEFAULT = 'serveur santé&cie'
-
-// Sera remplacé par un appel API /api/users
-const SIMULATED_USERS = [
-  'Sophie Leroy',
-  'Marc Martin',
-  'Lucas Bernard',
-  'Alice Petit',
-  'Christophe Dubois',
-  'Pierre Lefebvre',
-]
 
 const EMPTY_FORM = {
   numero_ot: '',
   intitule: '',
-  titulaire: '',
+  titulaire_id: '',
   numero_demande: '',
   lot_transport: '',
   ordre_passage: '',
   date_souhaitee: '',
-  demandeur: '',
+  demandeur_id: '',
   remarque: '',
 }
 
@@ -47,43 +38,45 @@ export default function OTForm({ ots, onSave, currentUser }) {
   const isEdit = Boolean(id)
   const existing = isEdit ? ots.find((o) => o.id === parseInt(id)) : null
 
-  const currentUserFullName = currentUser ? `${currentUser.prenom} ${currentUser.nom}` : ''
-
-  // Liste complète pour les selects : l'utilisateur courant en premier
-  const userOptions = [
-    currentUserFullName,
-    ...SIMULATED_USERS.filter((u) => u !== currentUserFullName),
-  ]
-
+  const [users, setUsers] = useState([])
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    api.fetchUsers().then(setUsers).catch(() => {})
+  }, [])
+
+  // Liste pour les selects : l'utilisateur courant en premier
+  const userOptions = currentUser
+    ? [currentUser, ...users.filter((u) => u.id !== currentUser.id)]
+    : users
 
   useEffect(() => {
     if (isEdit && existing) {
       setForm({
         numero_ot: existing.numero_ot,
         intitule: existing.intitule,
-        titulaire: existing.titulaire,
+        titulaire_id: existing.titulaire_id,
         numero_demande: existing.numero_demande,
         lot_transport: existing.lot_transport,
         ordre_passage: existing.ordre_passage,
         date_souhaitee: existing.date_souhaitee,
-        demandeur: existing.demandeur,
+        demandeur_id: existing.demandeur_id,
         remarque: existing.remarque || '',
       })
     } else {
       setForm({
         ...EMPTY_FORM,
         date_souhaitee: getDefaultDate(),
-        titulaire: currentUserFullName,
+        titulaire_id: currentUser?.id || '',
       })
     }
-  }, [isEdit, existing, currentUserFullName])
+  }, [isEdit, existing, currentUser])
 
   const validate = () => {
     const newErrors = {}
-    const required = ['numero_ot', 'intitule', 'titulaire', 'numero_demande', 'lot_transport', 'ordre_passage', 'date_souhaitee', 'demandeur']
+    const required = ['numero_ot', 'intitule', 'titulaire_id', 'numero_demande', 'lot_transport', 'ordre_passage', 'date_souhaitee', 'demandeur_id']
     required.forEach((field) => {
       if (!form[field] || form[field].toString().trim() === '') {
         newErrors[field] = 'Ce champ est obligatoire'
@@ -253,7 +246,7 @@ export default function OTForm({ ots, onSave, currentUser }) {
 
                 {/* Titulaire — select */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor="titulaire">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor="titulaire_id">
                     Titulaire <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -261,16 +254,16 @@ export default function OTForm({ ots, onSave, currentUser }) {
                       <span className="material-symbols-outlined text-slate-600 text-[18px]">person</span>
                     </div>
                     <select
-                      id="titulaire"
-                      name="titulaire"
-                      value={form.titulaire}
+                      id="titulaire_id"
+                      name="titulaire_id"
+                      value={form.titulaire_id}
                       onChange={handleChange}
-                      className={`${selectClass('titulaire')} pl-10 pr-8`}
+                      className={`${selectClass('titulaire_id')} pl-10 pr-8`}
                     >
                       <option value="" disabled>Sélectionner un titulaire</option>
-                      {userOptions.map((name) => (
-                        <option key={name} value={name}>
-                          {name}{name === currentUserFullName ? ' (Moi)' : ''}
+                      {userOptions.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.prenom} {u.nom}{u.id === currentUser?.id ? ' (Moi)' : ''}
                         </option>
                       ))}
                     </select>
@@ -278,12 +271,12 @@ export default function OTForm({ ots, onSave, currentUser }) {
                       <span className="material-symbols-outlined text-slate-600 text-[16px]">expand_more</span>
                     </div>
                   </div>
-                  <FieldError message={errors.titulaire} />
+                  <FieldError message={errors.titulaire_id} />
                 </div>
 
                 {/* Demandeur — select */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor="demandeur">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider" htmlFor="demandeur_id">
                     Demandeur <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -291,16 +284,16 @@ export default function OTForm({ ots, onSave, currentUser }) {
                       <span className="material-symbols-outlined text-slate-600 text-[18px]">person</span>
                     </div>
                     <select
-                      id="demandeur"
-                      name="demandeur"
-                      value={form.demandeur}
+                      id="demandeur_id"
+                      name="demandeur_id"
+                      value={form.demandeur_id}
                       onChange={handleChange}
-                      className={`${selectClass('demandeur')} pl-10 pr-8`}
+                      className={`${selectClass('demandeur_id')} pl-10 pr-8`}
                     >
                       <option value="" disabled>Sélectionner un demandeur</option>
-                      {userOptions.map((name) => (
-                        <option key={name} value={name}>
-                          {name}{name === currentUserFullName ? ' (Moi)' : ''}
+                      {userOptions.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.prenom} {u.nom}{u.id === currentUser?.id ? ' (Moi)' : ''}
                         </option>
                       ))}
                     </select>
@@ -308,7 +301,7 @@ export default function OTForm({ ots, onSave, currentUser }) {
                       <span className="material-symbols-outlined text-slate-600 text-[16px]">expand_more</span>
                     </div>
                   </div>
-                  <FieldError message={errors.demandeur} />
+                  <FieldError message={errors.demandeur_id} />
                 </div>
 
               </div>
