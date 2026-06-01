@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: 'localhost',
+    host: process.env.VITE_HOST || 'localhost',
     port: 5175,
     strictPort: true,
     hmr: {
@@ -14,7 +14,7 @@ export default defineConfig({
       protocol: 'ws',
     },
     proxy: {
-      '/api': 'http://localhost:5000',
+      '/api': process.env.BACKEND_URL || 'http://localhost:5000',
     },
   },
 })

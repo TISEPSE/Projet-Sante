@@ -162,8 +162,16 @@ def init():
 
         users_by_email = {u.email: u for u in Utilisateur.query.all()}
         baptiste = users_by_email['baptiste.deme@santecie.com']
+        equipe_baptiste = {
+            'nicolas.peret@santecie.com',
+            'loic.chevalier@santecie.com',
+            'francois.logeais@santecie.com',
+            'terence.belliguic@santecie.com',
+            'andy.gravier@santecie.com',
+        }
         for u in Utilisateur.query.filter_by(role='developpeur').all():
-            u.responsable_id = baptiste.id
+            if u.email in equipe_baptiste:
+                u.responsable_id = baptiste.id
         db.session.flush()
 
         # Lots de transport
@@ -194,7 +202,7 @@ def init():
             db.session.add(ot)
 
         db.session.commit()
-        print(f'{len(USERS)} utilisateurs insérés ({len(USERS) - 1} devs affiliés à Baptiste Deme).')
+        print(f'{len(USERS)} utilisateurs insérés (5 devs affiliés à Baptiste Deme, 2 sans responsable).')
         print(f'{len(LOTS)} lots de transport insérés.')
         print(f'{len(OTS)} OTs insérés.')
         print('Connexion : baptiste.deme@santecie.com / demo')

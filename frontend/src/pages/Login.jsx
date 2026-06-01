@@ -78,7 +78,7 @@ export default function Login({ onLogin }) {
               <label className="text-sm font-medium text-slate-300" htmlFor="password">
                 Mot de passe
               </label>
-              <div className="relative flex w-full">
+              <div className="relative w-full">
                 <input
                   ref={passwordRef}
                   id="password"
@@ -86,12 +86,12 @@ export default function Login({ onLogin }) {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="off"
                   placeholder="••••••••••••"
-                  className="w-full h-12 rounded-l bg-input-bg border border-border-dark border-r-0 px-4 text-base text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-600 transition-colors"
+                  className="w-full h-12 rounded bg-input-bg border border-border-dark px-4 pr-12 text-base text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-600 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="flex items-center justify-center px-4 h-12 bg-input-bg border border-border-dark border-l-0 rounded-r text-slate-400 hover:text-slate-300 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
                 >
                   <span className="material-symbols-outlined text-xl">
                     {showPassword ? 'visibility_off' : 'visibility'}

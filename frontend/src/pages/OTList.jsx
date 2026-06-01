@@ -39,7 +39,7 @@ export default function OTList({ ots }) {
     const q = search.toLowerCase()
     return (
       ot.numero_ot.toLowerCase().includes(q) ||
-      ot.numero_demande.toLowerCase().includes(q) ||
+      (ot.numero_demande || '').toLowerCase().includes(q) ||
       ot.titulaire.toLowerCase().includes(q) ||
       ot.demandeur.toLowerCase().includes(q) ||
       ot.intitule.toLowerCase().includes(q)

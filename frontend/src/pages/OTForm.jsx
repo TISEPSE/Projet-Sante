@@ -149,7 +149,7 @@ export default function OTForm({ ots, onSave, currentUser }) {
     },
     {
       id: 'date_souhaitee', label: 'Date et heure souhaitées', required: true,
-      hint: 'Heure par défaut : 18h00', icon: 'calendar_today', type: 'datetime-local',
+      hint: 'Heure par défaut : 18h00', type: 'datetime-local',
     },
   ]
 

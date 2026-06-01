@@ -151,11 +151,6 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
       <div className="flex-1 overflow-auto">
       <div className="max-w-5xl mx-auto p-6 flex flex-col gap-5">
 
-        {/* Sous-titre */}
-        <div>
-          <p className="text-slate-400 text-sm">{ot.intitule}</p>
-        </div>
-
         {/* Stat cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatPanel icon="tag" label="N° OT" value={ot.numero_ot} valueClass="text-primary" mono barColor="bg-primary" barWidth="80%" accent="border-primary/20" />
@@ -182,24 +177,6 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
                     <span className="text-slate-200 text-sm">{ot.titulaire}</span>
                   </div>
                 </Field>
-                <Field label="Encadrant (responsable du titulaire)">
-                  {ot.responsable_titulaire ? (
-                    <button
-                      onClick={() => setProfileModalId(ot.responsable_titulaire.id)}
-                      className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left"
-                    >
-                      <div className="w-7 h-7 rounded-full bg-purple-900/60 border border-purple-600/40 flex items-center justify-center text-[11px] font-bold text-purple-300 shrink-0">
-                        {ot.responsable_titulaire.prenom[0]}{ot.responsable_titulaire.nom[0]}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-slate-200 text-sm">{ot.responsable_titulaire.prenom} {ot.responsable_titulaire.nom}</span>
-                        <span className="text-slate-600 text-xs">Voir le profil</span>
-                      </div>
-                    </button>
-                  ) : (
-                    <span className="text-slate-600 text-sm">—</span>
-                  )}
-                </Field>
                 <Field label="Demandeur">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-full bg-teal-900/60 border border-teal-600/40 flex items-center justify-center text-[11px] font-bold text-teal-300">
@@ -225,26 +202,28 @@ export default function OTDetail({ ots, onValidateMEP, onCancelMEP, onDelete, cu
               <PanelHead icon="schedule" iconClass="text-amber-400" title="Planification" />
               <div className="p-5 flex flex-col gap-5">
                 {/* Timeline */}
-                <div className="flex items-center">
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="w-7 h-7 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center">
+                    <div className="w-7 h-7 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center shrink-0">
                       <span className="material-symbols-outlined text-primary text-[13px]">add_circle</span>
                     </div>
-                    <span className="text-[11px] text-slate-500">Créé</span>
-                  </div>
-                  <div className={`flex-1 h-px mx-2 ${ot.mep_effectuee ? 'bg-success' : 'bg-border-dark'}`} />
-                  <div className="flex flex-col items-center gap-1">
-                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center ${ot.mep_effectuee ? 'bg-success/20 border-success' : 'bg-surface-lighter border-border-dark'}`}>
+                    <div className={`flex-1 h-px mx-2 ${ot.mep_effectuee ? 'bg-success' : 'bg-border-dark'}`} />
+                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 ${ot.mep_effectuee ? 'bg-success/20 border-success' : 'bg-surface-lighter border-border-dark'}`}>
                       <span className={`material-symbols-outlined text-[13px] ${ot.mep_effectuee ? 'text-success' : 'text-slate-600'}`}>rocket_launch</span>
                     </div>
+                  </div>
+                  <div className="flex justify-between px-0.5">
+                    <span className="text-[11px] text-slate-500">Créé</span>
                     <span className="text-[11px] text-slate-500">MEP</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <Field label="Date souhaitée">
                     <span className="text-slate-200 text-sm font-medium">{deployDate.toLocaleDateString('fr-FR')}</span>
-                    <span className="text-amber-300 text-sm">{deployDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+                  </Field>
+                  <Field label="Heure souhaitée">
+                    <span className="text-amber-300 text-sm font-medium">{deployDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                   </Field>
                   <Field label="Lot de transport">
                     <span className="inline-flex items-center gap-1.5 text-sm text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded w-fit">

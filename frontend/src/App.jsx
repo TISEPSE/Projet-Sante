@@ -25,6 +25,7 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [ots, setOTs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [transitioning, setTransitioning] = useState(false)
   const [error, setError] = useState(null)
 
   const isLoggedIn = !!user
@@ -46,11 +47,12 @@ export default function App() {
   useEffect(() => {
     if (!isLoggedIn) return
     api.fetchOTs()
-      .then(setOTs)
-      .catch((err) => setError(err.message))
+      .then((data) => { setOTs(data); setTransitioning(false) })
+      .catch((err) => { setError(err.message); setTransitioning(false) })
   }, [isLoggedIn])
 
   const handleLogin = useCallback((userData) => {
+    setTransitioning(true)
     setUser(userData)
   }, [])
 
@@ -120,6 +122,11 @@ export default function App() {
           <button className="ml-3 font-bold" onClick={() => setError(null)}>✕</button>
         </div>
       )}
+      {transitioning ? (
+        <div className="flex h-screen items-center justify-center bg-bg-dark text-slate-400">
+          Chargement...
+        </div>
+      ) : (
       <Routes>
         <Route
           path="/login"
@@ -209,6 +216,7 @@ export default function App() {
         />
         <Route path="*" element={<Navigate to={isLoggedIn ? '/' : '/login'} replace />} />
       </Routes>
+      )}
     </BrowserRouter>
   )
 }

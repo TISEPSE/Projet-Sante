@@ -109,6 +109,8 @@ def delete_ot(ot_id):
 @ots_bp.post('/api/ots/<int:ot_id>/mep')
 @auth_required
 def validate_mep(ot_id):
+    if g.current_user.role != 'responsable':
+        return jsonify({'message': 'Réservé aux responsables'}), 403
     ot = db.session.get(OrdreTransport, ot_id)
     if not ot:
         return jsonify({'message': 'OT introuvable'}), 404
@@ -122,6 +124,8 @@ def validate_mep(ot_id):
 @ots_bp.delete('/api/ots/<int:ot_id>/mep')
 @auth_required
 def cancel_mep(ot_id):
+    if g.current_user.role != 'responsable':
+        return jsonify({'message': 'Réservé aux responsables'}), 403
     ot = db.session.get(OrdreTransport, ot_id)
     if not ot:
         return jsonify({'message': 'OT introuvable'}), 404
