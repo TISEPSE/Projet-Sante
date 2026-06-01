@@ -96,4 +96,16 @@ export async function removeFromTeam(devId) {
   return request(`/equipe/${devId}`, { method: 'DELETE' })
 }
 
+export async function adminOverview() {
+  return request('/admin/overview')
+}
+
+export async function adminAddToTeam(respId, devId) {
+  return request(`/admin/equipe/${respId}/${devId}`, { method: 'POST' })
+}
+
+export async function adminRemoveFromTeam(respId, devId) {
+  return request(`/admin/equipe/${respId}/${devId}`, { method: 'DELETE' })
+}
+
 export { getToken }

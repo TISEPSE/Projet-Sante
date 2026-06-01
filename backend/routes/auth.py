@@ -142,3 +142,73 @@ def remove_from_team(dev_id):
     dev.responsable_id = None
     db.session.commit()
     return jsonify(dev.to_dict())
+
+
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            verify_jwt_in_request()
+        except Exception:
+            return jsonify({'message': 'Token invalide ou expiré'}), 401
+        user = Utilisateur.query.get(int(get_jwt_identity()))
+        if not user:
+            return jsonify({'message': 'Compte introuvable'}), 401
+        if user.role != 'admin':
+            return jsonify({'message': 'Accès réservé aux administrateurs'}), 403
+        g.current_user = user
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+@auth_bp.get('/api/admin/overview')
+@admin_required
+def admin_overview():
+    responsables = Utilisateur.query.filter_by(role='responsable').order_by(
+        Utilisateur.nom, Utilisateur.prenom
+    ).all()
+    result = []
+    for resp in responsables:
+        equipe = Utilisateur.query.filter_by(responsable_id=resp.id).order_by(
+            Utilisateur.nom, Utilisateur.prenom
+        ).all()
+        r = resp.to_dict()
+        r['equipe'] = [d.to_dict() for d in equipe]
+        result.append(r)
+
+    unassigned = Utilisateur.query.filter_by(role='developpeur', responsable_id=None).order_by(
+        Utilisateur.nom, Utilisateur.prenom
+    ).all()
+
+    return jsonify({
+        'responsables': result,
+        'unassigned': [u.to_dict() for u in unassigned],
+    })
+
+
+@auth_bp.post('/api/admin/equipe/<int:resp_id>/<int:dev_id>')
+@admin_required
+def admin_add_to_team(resp_id, dev_id):
+    resp = db.session.get(Utilisateur, resp_id)
+    if not resp or resp.role != 'responsable':
+        return jsonify({'message': 'Responsable introuvable'}), 404
+    dev = db.session.get(Utilisateur, dev_id)
+    if not dev or dev.role != 'developpeur':
+        return jsonify({'message': 'Développeur introuvable'}), 404
+    dev.responsable_id = resp.id
+    db.session.commit()
+    return jsonify(dev.to_dict())
+
+
+@auth_bp.delete('/api/admin/equipe/<int:resp_id>/<int:dev_id>')
+@admin_required
+def admin_remove_from_team(resp_id, dev_id):
+    resp = db.session.get(Utilisateur, resp_id)
+    if not resp or resp.role != 'responsable':
+        return jsonify({'message': 'Responsable introuvable'}), 404
+    dev = db.session.get(Utilisateur, dev_id)
+    if not dev or dev.responsable_id != resp_id:
+        return jsonify({'message': "Ce développeur ne fait pas partie de cette équipe"}), 400
+    dev.responsable_id = None
+    db.session.commit()
+    return jsonify(dev.to_dict())

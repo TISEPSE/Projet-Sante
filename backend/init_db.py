@@ -10,14 +10,16 @@ from models import db, Utilisateur, LotTransport, OrdreTransport
 
 
 USERS = [
-    {'prenom': 'Baptiste',   'nom': 'Deme',      'email': 'baptiste.deme@santecie.com',  'password': 'demo', 'role': 'responsable'},
-    {'prenom': 'Nicolas',    'nom': 'Péret',      'email': 'nicolas.peret@santecie.com',      'password': 'demo', 'role': 'developpeur'},
-    {'prenom': 'Loic',       'nom': 'Chevalier',  'email': 'loic.chevalier@santecie.com',    'password': 'demo', 'role': 'developpeur'},
-    {'prenom': 'François',   'nom': 'Logeais',    'email': 'francois.logeais@santecie.com',  'password': 'demo', 'role': 'developpeur'},
-    {'prenom': 'Patrick',    'nom': 'Thiery',     'email': 'patrick.thiery@santecie.com',    'password': 'demo', 'role': 'developpeur'},
+    {'prenom': 'Admin',      'nom': 'Système',    'email': 'admin@santecie.com',             'password': 'admin', 'role': 'admin'},
+    {'prenom': 'Baptiste',   'nom': 'Deme',       'email': 'baptiste.deme@santecie.com',     'password': 'demo',  'role': 'responsable'},
+    {'prenom': 'Sophie',     'nom': 'Martin',     'email': 'sophie.martin@santecie.com',     'password': 'demo',  'role': 'responsable'},
+    {'prenom': 'Nicolas',    'nom': 'Péret',      'email': 'nicolas.peret@santecie.com',     'password': 'demo',  'role': 'developpeur'},
+    {'prenom': 'Loic',       'nom': 'Chevalier',  'email': 'loic.chevalier@santecie.com',    'password': 'demo',  'role': 'developpeur'},
+    {'prenom': 'François',   'nom': 'Logeais',    'email': 'francois.logeais@santecie.com',  'password': 'demo',  'role': 'developpeur'},
+    {'prenom': 'Patrick',    'nom': 'Thiery',     'email': 'patrick.thiery@santecie.com',    'password': 'demo',  'role': 'developpeur'},
     {'prenom': 'Christophe', 'nom': 'Tétard',     'email': 'christophe.tetard@santecie.com', 'password': 'demo', 'role': 'developpeur'},
-    {'prenom': 'Terence',    'nom': 'Belliguic',  'email': 'terence.belliguic@santecie.com', 'password': 'demo', 'role': 'developpeur'},
-    {'prenom': 'Andy',       'nom': 'Gravier',    'email': 'andy.gravier@santecie.com',      'password': 'demo', 'role': 'developpeur'},
+    {'prenom': 'Terence',    'nom': 'Belliguic',  'email': 'terence.belliguic@santecie.com', 'password': 'demo',  'role': 'developpeur'},
+    {'prenom': 'Andy',       'nom': 'Gravier',    'email': 'andy.gravier@santecie.com',      'password': 'demo',  'role': 'developpeur'},
 ]
 
 LOTS = [
@@ -162,6 +164,7 @@ def init():
 
         users_by_email = {u.email: u for u in Utilisateur.query.all()}
         baptiste = users_by_email['baptiste.deme@santecie.com']
+        sophie = users_by_email['sophie.martin@santecie.com']
         equipe_baptiste = {
             'nicolas.peret@santecie.com',
             'loic.chevalier@santecie.com',
@@ -169,9 +172,15 @@ def init():
             'terence.belliguic@santecie.com',
             'andy.gravier@santecie.com',
         }
+        equipe_sophie = {
+            'christophe.tetard@santecie.com',
+        }
+        # patrick.thiery reste sans responsable (pour démonstration de l'admin)
         for u in Utilisateur.query.filter_by(role='developpeur').all():
             if u.email in equipe_baptiste:
                 u.responsable_id = baptiste.id
+            elif u.email in equipe_sophie:
+                u.responsable_id = sophie.id
         db.session.flush()
 
         # Lots de transport
@@ -202,10 +211,13 @@ def init():
             db.session.add(ot)
 
         db.session.commit()
-        print(f'{len(USERS)} utilisateurs insérés (5 devs affiliés à Baptiste Deme, 2 sans responsable).')
+        print(f'{len(USERS)} utilisateurs insérés.')
+        print('  → Baptiste Deme : 5 devs | Sophie Martin : 1 dev | Patrick Thiery : sans responsable')
         print(f'{len(LOTS)} lots de transport insérés.')
         print(f'{len(OTS)} OTs insérés.')
-        print('Connexion : baptiste.deme@santecie.com / demo')
+        print('Admin       : admin@santecie.com / admin')
+        print('Responsable : baptiste.deme@santecie.com / demo')
+        print('Développeur : nicolas.peret@santecie.com / demo')
 
 
 if __name__ == '__main__':

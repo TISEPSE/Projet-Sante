@@ -9,6 +9,7 @@ import OTDetail from './pages/OTDetail'
 import OTForm from './pages/OTForm'
 import Settings from './pages/Settings'
 import UserProfile from './pages/UserProfile'
+import AdminPage from './pages/AdminPage'
 
 function Layout({ children, user, onLogout }) {
   return (
@@ -211,6 +212,18 @@ export default function App() {
               </Layout>
             ) : (
               <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            isLoggedIn && user?.role === 'admin' ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <AdminPage />
+              </Layout>
+            ) : (
+              <Navigate to={isLoggedIn ? '/' : '/login'} replace />
             )
           }
         />

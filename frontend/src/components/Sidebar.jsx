@@ -49,6 +49,22 @@ export default function Sidebar({ user, onLogout }) {
             <span className="material-symbols-outlined text-[20px]">settings</span>
             Paramètres
           </NavLink>
+
+          {user.role === 'admin' && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors border-l-2 ${
+                  isActive
+                    ? 'text-amber-300 bg-amber-500/10 border-amber-400'
+                    : 'text-slate-400 hover:text-amber-300 hover:bg-amber-500/5 border-transparent'
+                }`
+              }
+            >
+              <span className="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+              Administration
+            </NavLink>
+          )}
         </nav>
 
         {/* User */}
